@@ -188,12 +188,9 @@ function new_registro() {
       })
     }
   })
-
-
-
 }
 
-// Lista os Dados dos Campos do Formularário
+// Lista os Dados dos Campos do Formulário
 
 function show(id_registro) {
 
