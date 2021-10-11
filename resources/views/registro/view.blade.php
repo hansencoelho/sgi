@@ -71,7 +71,8 @@
 {{-- Lista de Conteúdo --}}
 <div class="table-responsive-sm" style="font-size: 14px;">
   <table class="table table-sm table-striped">
-    <thead class="thead" style="background-color: #004375; color: white;">
+    <!-- <thead class="thead" style="background-color: #004375; color: white;"> -->
+    <thead class="thead table-dark">
       <tr>
         <th scope="col">Tipo Registro</th>
         <th scope="col">Nome</th>
