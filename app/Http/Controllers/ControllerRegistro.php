@@ -258,6 +258,78 @@ class ControllerRegistro extends Controller
         }
     }
 
+    public function new()
+    {
+
+        if( Gate::denies('registro-view')) {
+
+            abort(403, 'Não autorizado');
+    
+        } else {
+
+        $dados = array();  
+        $dados = (object) $dados;
+        
+        // $dados->registro = 'show';
+        // $dados['teste'] = 123;
+        // $dados->show->registros =  [ 0 => 'karen', 1 => 'rodrigo'];
+
+        // $dados->registro = Registro::select(
+
+        //     'registro.*',
+        //     'tr.descricao       AS ds_tipo_registro',
+        //     'tlr.descricao      AS ds_tipo_local_registro',
+        //     'uf.id              AS id_uf',
+        //     'uf.sigla           AS ds_uf',
+        //     'ci.id              AS id_cidade',
+        //     'ci.descricao       AS ds_cidade',
+        //     'de.descricao       AS ds_declarante',
+        //     'ns.descricao       AS ds_nacionalidade_sobrenome',
+        //     'cv.descricao       AS ds_estado_civil',
+        //     'rl.id              AS ds_religiao',
+        //     'rl.descricao       AS ds_religiao',
+    
+        //     )
+        //     ->leftjoin('tipo_registro AS tr', 'registro.fk_tipo_registro', '=', 'tr.id')
+        //     ->leftjoin('tipo_local_registro AS tlr', 'registro.fk_tipo_local_registro', '=', 'tlr.id')
+        //     ->leftjoin('cidade AS ci', 'registro.fk_cidade', '=', 'ci.id')
+        //     ->leftjoin('uf', 'ci.fk_uf', '=', 'uf.id')
+        //     ->leftjoin('declarante AS de', 'registro.fk_declarante', '=', 'de.id')
+        //     ->leftjoin('nacionalidade_sobrenome AS ns', 'registro.fk_nacionalidade_sobrenome', '=', 'ns.id')
+        //     ->leftjoin('estado_civil AS cv', 'registro.fk_estado_civil', '=', 'cv.id')
+        //     ->leftjoin('religiao AS rl', 'registro.fk_religiao', '=', 'rl.id')
+        //     ->where('registro.id' , '=' , $id_usuario)
+        //     // ->orderBy('name', 'ASC')
+        //     ->get();
+
+        $dados->tipo_registro = TipoRegistro::all();
+        $dados->tipo_local_registro = TipoLocalRegistro::all();
+        $dados->declarante = Declarante::all();
+        $dados->tipo_registro = TipoRegistro::all();
+        $dados->estado_civil = EstadoCivil::all();
+        // $dados->religiao = Religiao::all();
+        // $dados->uf = Uf::all();
+        // $dados->cidade = Cidade::all();
+        $dados->nacionalidade_sobrenome = NacionalidadeSobrenome::all();
+
+        // dd($dados);
+
+        $dados->titulo = "Novo - Registro";
+  
+        
+
+        // return view('admin.usuario.formulario', compact(
+        //     'titulo',
+        //     'grupo_usuario',
+        //     'usuario',
+        // ));
+
+        return response()->json($dados);
+
+        }
+
+    }
+
     public function show($id_usuario)
     {
 
@@ -330,6 +402,26 @@ class ControllerRegistro extends Controller
 
     }
 
+    public function store(Request $request)
+    {
+
+        // dd($request);
+
+        // dd($request);
+
+        
+        // if( Gate::denies('registro-edit')) {
+
+        //     abort(403, 'Não autorizado. Você não tem permissão de editar.');
+    
+        // } else {
+
+        // }
+
+        return $request;
+
+    }
+
 
     public function update(Request $request)
     {
@@ -377,6 +469,76 @@ class ControllerRegistro extends Controller
             ));
 
                     
+        }
+
+    }
+
+
+    public function autocomplete_uf(Request $request)
+    {
+
+        if( Gate::denies('registro-view')) {
+
+            abort(403, 'Não autorizado. Você não tem permissão de visualizar.');
+    
+        } else {
+
+        $uf = Uf::select(
+        'id AS id',
+        'sigla AS value',
+        )
+        ->where('sigla' , 'like' , '%'.$request->term.'%')
+        ->get();
+
+        return response()->json($uf);
+
+        }
+
+    }
+
+    public function autocomplete_cidade(Request $request)
+    {
+
+        if( Gate::denies('registro-view')) {
+
+            abort(403, 'Não autorizado. Você não tem permissão de visualizar.');
+    
+        } else {
+
+        $cidade = Cidade::select(
+        'cidade.id AS id',
+        'cidade.descricao AS value',
+        'cidade.fk_uf AS fk_uf',
+        )
+        ->leftjoin('uf', 'cidade.fk_uf', '=', 'uf.id')
+        ->where('cidade.descricao' , 'like' , '%'.$request->term.'%')
+        ->where('uf.id' , '=' , $request->id_uf)
+        ->get();
+
+        return response()->json($cidade);
+
+        }
+
+    }
+
+    public function autocomplete_religiao(Request $request)
+    {
+
+        if( Gate::denies('registro-view')) {
+
+            abort(403, 'Não autorizado. Você não tem permissão de visualizar.');
+    
+        } else {
+
+        $religiao = Religiao::select(
+        'id AS id',
+        'descricao AS value',
+        )
+        ->where('descricao' , 'like' , '%'.$request->term.'%')
+        ->get();
+
+        return response()->json($religiao);
+
         }
 
     }

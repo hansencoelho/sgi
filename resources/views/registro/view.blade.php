@@ -19,7 +19,7 @@
     <div class="col-md-10">
 
       <button type="button" onclick="new_registro()" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modal_registro">
-      <i class="fa fa-plus fa-lg"></i> Inserir</button>
+      <i class="fa fa-plus fa-lg"></i> Novo</button>
 
       <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#pesquisar" aria-expanded="false">
       <i class="fa fa-search fa-lg"></i> Pesquisa</button>
@@ -42,6 +42,7 @@
     <div class="card card-body">
         <form class="row g-12" method="POST" action="{{ route('usuario.find') }}">
         {{ csrf_field() }}
+        
             <div class="col-sm-2">
                 <select id="pesquisa_opcao" name="pesquisa_opcao" class="form-select form-select-sm">
                 <option value="1" @if (isset($pesquisa_retorno) && $pesquisa_retorno['pesquisa_opcao'] == 1 ) selected="selected" @endif>Nome</option>
@@ -49,7 +50,7 @@
                 <option value="3" @if (isset($pesquisa_retorno) && $pesquisa_retorno['pesquisa_opcao'] == 3 ) selected="selected" @endif>Usuário</option>
                 </select>
             </div>
-
+            
             <div class="col-md-4">
                 <!-- <label for="pesquisa_texto" class="form-label">Pesquisa:</label> -->
                 <input type="text" id="pesquisa_texto" name="pesquisa_texto" value="@if (isset($pesquisa_retorno)){{ $pesquisa_retorno['pesquisa_texto'] }}@endif" class="form-control form-control-sm" placeholder="Pesquisar..." aria-label="Recipient's username" aria-describedby="button-addon2">
@@ -97,7 +98,7 @@
         <td>{{ $tb_registro->livro }}</td>
         <td>{{ $tb_registro->folha }}</td>
         <td>{{ $tb_registro->termo }}</td>
-        <td style="text-align: center;"> <a href="#" onclick="show({{ $tb_registro->id }})" data-bs-toggle="modal" data-bs-target="#modal_registro"> <i class="fa fa-eye fa-lg"></i></a></td>
+        <td style="text-align: center;"> <a href="#" onclick="show_registro({{ $tb_registro->id }})" data-bs-toggle="modal" data-bs-target="#modal_registro"> <i class="fa fa-eye fa-lg"></i></a></td>
         
         {{-- <a href="{{ route('usuario.show', ['id_usuario' => $tb_usuario->ID_USUARIO]) }}" target="_blank"><i class="fa fa-eye fa-lg"></i></a> </td> --}}
         {{-- <td style="vertical-align: middle; text-align: center;"><a href="{{ route('admin_user.show', ['id_user' => $tb_usuario->ID_USUARIO]) }}" target="_blank"><i class="fa fa-save fa-lg"></i></a> </td> --}}
@@ -115,39 +116,39 @@
         <h5 class="modal-title" id="titulo_modal">Cadastro de Registro</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body ui-front">
 
       <!-- Formulário -->
-      <form id="formulario">
+      <form id="formulario" class="was-validated">
 
         <!-- Linha 1 - Dados Registro -->
         <div class="row mb-3 g-3">
         <input type="hidden" id="id" name="id" class="form-control form-control-sm" value="">
           <div class="col-sm-2">
               <label for="tipo_registro" class="form-label">Tipo de Registro:</label>
-              <select id="tipo_registro" name="tipo_registro" class="form-select form-select-sm">
+              <select id="tipo_registro" name="tipo_registro" class="form-select form-select-sm" required>
               </select>
           </div>
           <div class="col-sm-2">
             <label for="tipo_local_registro" class="form-label">Tipo de Local de Registro:</label>
-            <select id="tipo_local_registro" name="tipo_local_registro" class="form-select form-select-sm">
+            <select id="tipo_local_registro" name="tipo_local_registro" class="form-select form-select-sm" required>
             </select>
           </div>
           <div class="col-sm-5">
             <label for="local_registro" class="form-label">Local de Registro:</label>
-            <input type="text" id="local_registro" name="local_registro" class="form-control form-control-sm" >
+            <input type="text" id="local_registro" name="local_registro" class="form-control form-control-sm" required>
           </div>
           <div class="col-sm-1">
             <label for="livro" class="form-label">Livro:</label>
-            <input type="text" id="livro" name="livro" class="form-control form-control-sm" >
+            <input type="text" id="livro" name="livro" class="form-control form-control-sm" required>
           </div>
           <div class="col-sm-1">
             <label for="folha" class="form-label">Folha:</label>
-            <input type="text" id="folha" name="folha" class="form-control form-control-sm" >
+            <input type="text" id="folha" name="folha" class="form-control form-control-sm" required>
           </div>
           <div class="col-sm-1">
             <label for="termo" class="form-label">Termo:</label>
-            <input type="text" id="termo" name="termo" class="form-control form-control-sm" >
+            <input type="text" id="termo" name="termo" class="form-control form-control-sm" required>
           </div>
         </div>
 
@@ -155,34 +156,30 @@
         <div class="row mb-3 g-3">
           <div class="col-sm-2">
             <label id="label_data_fato" for="data_fato" class="form-label">Data Fato:</label>
-            <input type="date" id="data_fato" name="data_fato" class="form-control form-control-sm" >
+            <input type="date" id="data_fato" name="data_fato" class="form-control form-control-sm" required>
           </div>
           <div class="col-sm-2">
             <label id="label_data_registro" for="data_registro" class="form-label">Data Registro Cartório:</label>
-            <input type="date" id="data_registro" name="data_registro" class="form-control form-control-sm" >
+            <input type="date" id="data_registro" name="data_registro" class="form-control form-control-sm" required>
           </div>
           <div class="col-sm-1">
             <label for="uf" class="form-label">UF:</label>
-            <input type="hidden" id="id_uf" name="id_uf" class="form-control form-control-sm" >
-            <input type="text" id="uf" name="uf" class="form-control form-control-sm" >
+            <input type="hidden" id="id_uf" name="id_uf" value="" class="form-control form-control-sm" required>
+            <input type="text" id="uf" name="uf" value="" class="form-control form-control-sm" required>
           </div>
           <div class="col-md-3">
             <label for="cidade" class="form-label">Cidade:</label>
-            <input type="hidden" id="id_cidade" name="id_cidade" class="form-control form-control-sm" >
-            <input type="text" id="cidade" name="cidade" class="form-control form-control-sm" >
+            <input type="hidden" id="id_cidade" name="id_cidade" class="form-control form-control-sm" required>
+            <input type="text" id="cidade" name="cidade" class="form-control form-control-sm" disabled="true" required>
           </div>
           <div id="div_declarante" class="col-sm-2">
             <label for="declarante" class="form-label">Declarante:</label>
-            <select id="declarante" name="declarante" class="form-select form-select-sm">
-              <option selected>Pai</option>
-              <option>Mãe</option>
-              <option>Ambos</option>
-              <option>Terceiro</option>
+            <select id="declarante" name="declarante" class="form-select form-select-sm" required>
             </select>
           </div>
           <div class="col-sm-2">
             <label for="avos_registrados" class="form-label">Possui Avó Registrados:</label>
-            <select id="avos_registrados" name="avos_registrados" class="form-select form-select-sm">
+            <select id="avos_registrados" name="avos_registrados" class="form-select form-select-sm" required>
               <option selected>Não</option>
               <option>Sim</option>
             </select>
@@ -193,7 +190,7 @@
         <div class="row mb-3 g-3">
           <div id="div_declarante_terceiro" class="col-md-4" style="display: none;">
             <label for="declarante_terceiro" class="form-label">Declarante Terceiro:</label>
-            <input type="text" id="declarante_terceiro" name="declarante_terceiro" class="form-control form-control-sm" >
+            <input type="text" id="declarante_terceiro" name="declarante_terceiro" class="form-control form-control-sm" required>
           </div>
         </div>
           
@@ -201,30 +198,30 @@
         <div class="row mb-3 g-3"> 
           <div class="col-sm-2">
             <label for="nome" class="form-label">Nome:</label>
-            <input type="text" id="nome" name="nome" class="form-control form-control-sm" >
+            <input type="text" id="nome" name="nome" class="form-control form-control-sm" required>
           </div>
           <div class="col-sm-4">
             <label for="sobrenome" class="form-label">Sobrenome:</label>
-            <input type="text" id="sobrenome" name="sobrenome" class="form-control form-control-sm" >
+            <input type="text" id="sobrenome" name="sobrenome" class="form-control form-control-sm" required>
           </div>
-          <div class="col-sm-2">
+          <div id="div_nacionalidade_sobrenome" class="col-sm-2">
             <label for="nacionalidade_sobrenome" class="form-label">Nacionalidade Sobrenome:</label>
-            <select id="nacionalidade_sobrenome" name="nacionalidade_sobrenome" class="form-select form-select-sm">
+            <select id="nacionalidade_sobrenome" name="nacionalidade_sobrenome" class="form-select form-select-sm" required>
               <option selected>Brasileiro</option>
               <option>Italiano</option>
             </select>
           </div>
           <div id="div_estado_civil" class="col-sm-2">
             <label id="label_estado_civil" for="estado_civil" class="form-label">Estado Civil:</label>
-            <select id="estado_civil" name="estado_civil" class="form-select form-select-sm">
+            <select id="estado_civil" name="estado_civil" class="form-select form-select-sm" required>
               <option selected>Solteiro(a)</option>
               <option>Casado(a)</option>
             </select>
           </div>
           <div id="div_religiao" class="col-sm-2">
             <label for="religiao" class="form-label">Religião:</label>
-            <input type="hidden" id="id_religiao" name="id_religiao" class="form-control form-control-sm" >
-            <input type="text" id="religiao" name="religiao" class="form-control form-control-sm" >
+            <input type="hidden" id="id_religiao" name="id_religiao" class="form-control form-control-sm">
+            <input type="text" id="religiao" name="religiao" class="form-control form-control-sm">
           </div>
         </div>
 
@@ -233,11 +230,11 @@
         <div class="row mb-3 g-3">
           <div id="div_nome_conjuge" class="col-sm-2">
             <label for="nome_conjuge" class="form-label">Nome Conjuge:</label>
-            <input type="text" id="nome_conjuge" name="nome_conjuge" class="form-control form-control-sm" >
+            <input type="text" id="nome_conjuge" name="nome_conjuge" class="form-control form-control-sm" required>
           </div>
           <div id="div_sobrenome_conjuge" class="col-sm-4">
             <label for="sobrenome_conjuge" class="form-label">Sobrenome Conjuge:</label>
-            <input type="text" id="sobrenome_conjuge" name="sobrenome_conjuge" class="form-control form-control-sm" >
+            <input type="text" id="sobrenome_conjuge" name="sobrenome_conjuge" class="form-control form-control-sm" required>
           </div>
         </div>
 
@@ -247,19 +244,19 @@
         <div class="row mb-3 g-3"> 
           <div id="div_nome_pai" class="col-sm-2">
             <label for="nome_pai" class="form-label">Nome Pai:</label>
-            <input type="text" id="nome_pai" name="nome_pai" class="form-control form-control-sm" >
+            <input type="text" id="nome_pai" name="nome_pai" class="form-control form-control-sm">
           </div>
           <div id="div_sobrenome_pai" class="col-sm-4">
             <label for="sobrenome_pai" class="form-label">Sobrenome Pai:</label>
-            <input type="text" id="sobrenome_pai" name="sobrenome_pai" class="form-control form-control-sm" >
+            <input type="text" id="sobrenome_pai" name="sobrenome_pai" class="form-control form-control-sm">
           </div>
           <div id="div_nome_mae" class="col-sm-2">
             <label for="nome_mae" class="form-label">Nome Mãe:</label>
-            <input type="text" id="nome_mae" name="nome_mae" class="form-control form-control-sm" >
+            <input type="text" id="nome_mae" name="nome_mae" class="form-control form-control-sm">
           </div>
           <div id="div_sobrenome_mae" class="col-sm-4">
             <label for="sobrenome_mae" class="form-label">Sobrenome Mãe:</label>
-            <input type="text" id="sobrenome_mae" name="sobrenome_mae" class="form-control form-control-sm" >
+            <input type="text" id="sobrenome_mae" name="sobrenome_mae" class="form-control form-control-sm">
           </div>
         </div>
 
@@ -267,20 +264,20 @@
         <div class="row mb-3 g-3"> 
           <div id="div_nome_avo_paterno" class="col-sm-2" style="display: none;">
             <label for="nome_avo_paterno" class="form-label">Nome Avô Paterno:</label>
-            <input type="text" id="nome_avo_paterno" name="nome_avo_paterno" class="form-control form-control-sm" >
+            <input type="text" id="nome_avo_paterno" name="nome_avo_paterno" class="form-control form-control-sm">
           </div>
           <div id="div_sobrenome_avo_paterno" class="col-sm-4" style="display: none;">
             <label for="sobrenome_avo_paterno" class="form-label">Sobrenome Avô Paterno:</label>
-            <input type="text" id="sobrenome_avo_paterno" name="sobrenome_avo_paterno" class="form-control form-control-sm" >
+            <input type="text" id="sobrenome_avo_paterno" name="sobrenome_avo_paterno" class="form-control form-control-sm">
           </div>
 
           <div id="div_nome_avo_materno" class="col-sm-2" style="display: none;">
             <label for="nome_avo_materno" class="form-label">Nome Avô Materno:</label>
-            <input type="text" id="nome_avo_materno" name="nome_avo_materno" class="form-control form-control-sm" >
+            <input type="text" id="nome_avo_materno" name="nome_avo_materno" class="form-control form-control-sm">
           </div>
           <div id="div_sobrenome_avo_materno" class="col-sm-4" style="display: none;">
             <label for="sobrenome_avo_materno" class="form-label">Sobrenome Avô Materno:</label>
-            <input type="text" id="sobrenome_avo_materno" name="sobrenome_avo_materno" class="form-control form-control-sm" >
+            <input type="text" id="sobrenome_avo_materno" name="sobrenome_avo_materno" class="form-control form-control-sm">
           </div>
         </div>
 
@@ -288,20 +285,20 @@
         <div class="row mb-3 g-3">
           <div id="div_nome_avo_paterna" class="col-sm-2" style="display: none;">
             <label for="nome_avo_paterna" class="form-label">Nome Avó Paterna:</label>
-            <input type="text" id="nome_avo_paterna" name="nome_avo_paterna" class="form-control form-control-sm" >
+            <input type="text" id="nome_avo_paterna" name="nome_avo_paterna" class="form-control form-control-sm">
           </div>
           <div id="div_sobrenome_avo_paterna" class="col-sm-4" style="display: none;">
             <label for="sobrenome_avo_paterna" class="form-label">Sobrenome Avó Paterna:</label>
-            <input type="text" id="sobrenome_avo_paterna" name="sobrenome_avo_paterna" class="form-control form-control-sm" >
+            <input type="text" id="sobrenome_avo_paterna" name="sobrenome_avo_paterna" class="form-control form-control-sm">
           </div>
 
           <div id="div_nome_avo_materna" class="col-sm-2" style="display: none;">
             <label for="nome_avo_materna" class="form-label">Nome Avó Materna:</label>
-            <input type="text" id="nome_avo_materna" name="nome_avo_materna" class="form-control form-control-sm" >
+            <input type="text" id="nome_avo_materna" name="nome_avo_materna" class="form-control form-control-sm">
           </div>
           <div id="div_sobrenome_avo_materna" class="col-sm-4" style="display: none;">
             <label for="sobrenome_avo_materna" class="form-label">Sobrenome Avó Materna:</label>
-            <input type="text" id="sobrenome_avo_materna" name="sobrenome_avo_materna" class="form-control form-control-sm" >
+            <input type="text" id="sobrenome_avo_materna" name="sobrenome_avo_materna" class="form-control form-control-sm">
           </div>
         </div>
 
@@ -309,14 +306,22 @@
         <div class="row mb-3 g-3">
           <div class="col-sm-6">
             <label for="multiplos_arquivos" class="form-label">Selecione os Arquivos:</label>
-            <input class="form-control form-control-sm" type="file" id="multiplos_arquivos" name="multiplos_arquivos" multiple>
+            <input class="form-control form-control-sm" type="file" id="multiplos_arquivos" name="multiplos_arquivos[]" multiple/>
+          </div>
+        </div>
+
+        <!-- Barra de Progresso -->
+        <div class="row mb-3 g-3" id="div_barra_progresso" style="display: none;">
+          <label class="form-label" id="label_barra_progresso"></label>
+          <div class="progress" id="barra_progresso">
+            <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">0%</div>
           </div>
         </div>
 
         <!-- Botões de Ação -->
         <div class="modal-footer">
           <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal"><i class="fa fa-sign-out-alt fa-lg"></i> Sair</button>
-          <button type="button" class="btn btn-sm btn-success"><i class="fa fa-save fa-lg"></i> Salvar</button>
+          <button type="button" id="button_modal" onclick="change_registro();" class="btn btn-sm btn-success"><i class="fa fa-save fa-lg"></i> Salvar</button>
         </div>
         
       </form>

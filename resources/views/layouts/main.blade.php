@@ -14,17 +14,18 @@
 
         <!-- Bootstrap JS -->
         <script src="{{ asset('/js/bootstrap.bundle.min.js') }}"></script>
+
+        <!-- Font Awesome 6 -->
         <script src="{{ asset('/js/font-awesome-6.js') }}" crossorigin="anonymous"></script>
 
         <!-- jQuery library -->
         <script type="text/javascript" language="javascript" src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
 
         <!-- jQueryUI library JS -->
-        <script type="text/javascript" language="javascript" src="{{ asset('js/jquery-ui.min.js') }}"></script>
+        <script type="text/javascript" language="javascript" src="{{ asset('js/jquery-ui-1.13.0.min.js') }}"></script>
         
         <!-- jQueryUI library CSS -->
-        <link href="{{ asset('/css/jquery-ui.min.css') }}" rel="stylesheet">
-
+        <link href="{{ asset('/css/jquery-ui-1.13.0.min.css') }}" rel="stylesheet">
     </head>
 
     <body>
