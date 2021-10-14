@@ -509,28 +509,28 @@ function show_registro(id_registro) {
 
 function save_registro() {
 
-  // var count = 0
-  // var forms = document.querySelectorAll("[required]");
+  var count = 0
+  var forms = document.querySelectorAll("[required]");
 
-  // $.each(forms, function(index, form) {
+  $.each(forms, function(index, form) {
 
-  //   if (form.value === '') {
+    if (form.value === '') {
 
-  //     count = count + 1;
+      count = count + 1;
     
-  //   }
+    }
 
-  // })
+  })
 
-  // console.log(count);
+  console.log(count);
 
-  // if (count > 0) {
+  if (count > 0) {
 
-  //   alert('Todos os campos devem ser preenchidos antes de salvar o registro!');
+    alert('Todos os campos devem ser preenchidos antes de salvar o registro!');
 
-  //   return false;
+    return false;
 
-  // } else {
+  } else {
 
   var _token = $('meta[name="_token"]').attr('content');
 
@@ -643,7 +643,7 @@ function save_registro() {
   //     }
   // });
 
-// }
+  }
      
 
 }
