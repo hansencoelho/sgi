@@ -410,15 +410,28 @@ class ControllerRegistro extends Controller
         // dd($request);
 
         
-        // if( Gate::denies('registro-edit')) {
+        if( Gate::denies('registro-create')) {
 
-        //     abort(403, 'Não autorizado. Você não tem permissão de editar.');
+            abort(403, 'Não autorizado. Você não tem permissão de editar.');
     
-        // } else {
+        } else {
 
-        // }
 
-        return $request;
+            foreach ($request->multiplos_arquivos as $key => $arquivo){
+
+                $key = $key + 1;
+
+                $arquivo->storeAs('arquivos_registros', 'boleto'.$key);
+
+            }
+
+        return 1 ;
+
+
+        }
+
+        
+
 
     }
 

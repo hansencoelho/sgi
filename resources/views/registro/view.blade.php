@@ -117,7 +117,9 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body ui-front">
-
+          <div id="div_carregamento" class="spinner-border text-primary" role="status" style="display: none;">
+            <span class="visually-hidden ms-auto">Loading...</span>
+          </div>
       <!-- Formulário -->
       <form id="formulario" class="was-validated">
 

@@ -253,7 +253,14 @@ function new_registro() {
     url: '/registro/new/',
     type: 'get',
     dataType: 'JSON',
+    beforeSend: function () {
+      
+      $('#div_carregamento').show();
+      
+    },       
     success: function(response){
+
+      $('#div_carregamento').hide();
 
       var titulo = response['titulo'];
       var tipo_registro = response['tipo_registro'];
@@ -316,7 +323,14 @@ function show_registro(id_registro) {
     url: '/registro/show/'+id_registro,
     type: 'get',
     dataType: 'JSON',
+    beforeSend: function () {
+      
+      $('#div_carregamento').show();
+      
+    },       
     success: function(response){
+
+      $('#div_carregamento').hide();
 
       var titulo = response['titulo'];
       var registro = response['registro'][0];
@@ -509,39 +523,39 @@ function show_registro(id_registro) {
 
 function save_registro() {
 
-  var count = 0
-  var forms = document.querySelectorAll("[required]");
+  // var count = 0
+  // var forms = document.querySelectorAll("[required]");
 
-  $.each(forms, function(index, form) {
+  // $.each(forms, function(index, form) {
 
-    if (form.value === '') {
+  //   if (form.value === '') {
 
-      count = count + 1;
+  //     count = count + 1;
     
-    }
+  //   }
 
-  })
+  // })
 
-  console.log(count);
+  // console.log(count);
 
-  if (count > 0) {
+  // if (count > 0) {
 
-    alert('Todos os campos devem ser preenchidos antes de salvar o registro!');
+  //   alert('Todos os campos devem ser preenchidos antes de salvar o registro!');
 
-    return false;
+  //   return false;
 
-  } else {
+  // } else {
 
   var _token = $('meta[name="_token"]').attr('content');
 
 
 
-  var arquivos = document.getElementById('multiplos_arquivos');
-  var formulario = $('#formulario')[0];
+  // var arquivos = document.getElementById('multiplos_arquivos');
+  // var formulario = $('#formulario')[0];
 
-  console.log(formulario);
+  // console.log(formulario);
 
-  const xhr = new XMLHttpRequest();
+  // const xhr = new XMLHttpRequest();
   const formData = new FormData(formulario);
 
 
@@ -567,7 +581,8 @@ function save_registro() {
         type: 'POST',
         data: formData,
         cache: false,
-        contentType: 'multipart/form-data; boundary=something',
+        contentType: false,
+        // contentType: 'multipart/form-data',
         processData: false,
         xhr: function () {
             var xhr = new window.XMLHttpRequest();
@@ -643,7 +658,7 @@ function save_registro() {
   //     }
   // });
 
-  }
+  // }
      
 
 }
