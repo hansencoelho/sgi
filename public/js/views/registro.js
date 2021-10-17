@@ -245,12 +245,12 @@ $(function() {
 });
 
 // Apresenta um formulário em branco para novo registro, e lista os Dados Auxiliares do Registro nos Campos do Formulário
-function new_registro() {
+function create_registro() {
 
   clearforms($("#formulario"));
 
   $.ajax({
-    url: '/registro/new/',
+    url: '/registro/create/',
     type: 'get',
     dataType: 'JSON',
     beforeSend: function () {
@@ -523,59 +523,35 @@ function show_registro(id_registro) {
 
 function save_registro() {
 
-  // var count = 0
-  // var forms = document.querySelectorAll("[required]");
+  var count = 0
+  var forms = document.querySelectorAll("[required]");
 
-  // $.each(forms, function(index, form) {
+  $.each(forms, function(index, form) {
 
-  //   if (form.value === '') {
+    if (form.value === '') {
 
-  //     count = count + 1;
+      count = count + 1;
     
-  //   }
+    }
 
-  // })
+  })
 
-  // console.log(count);
+  console.log(count);
 
-  // if (count > 0) {
+  if (count > 0) {
 
-  //   alert('Todos os campos devem ser preenchidos antes de salvar o registro!');
+    alert('Todos os campos devem ser preenchidos antes de salvar o registro!');
 
-  //   return false;
+    return false;
 
-  // } else {
+  } else {
 
-  var _token = $('meta[name="_token"]').attr('content');
+    var _token = $('meta[name="_token"]').attr('content');
 
-
-
-  // var arquivos = document.getElementById('multiplos_arquivos');
-  // var formulario = $('#formulario')[0];
-
-  // console.log(formulario);
-
-  // const xhr = new XMLHttpRequest();
-  const formData = new FormData(formulario);
-
-
-  console.log(formData);
-
-  // for (const file of arquivos.files) {
-
-  //   formData.append('multiplos_arquivos[]', file);
-
-  // }
-
-    $.ajaxSetup({
-    
-      headers: {
-          'X-CSRF-TOKEN': _token
-      }
-
-    });
+    const formData = new FormData(formulario);
 
     $.ajax({
+        headers: { 'X-CSRF-TOKEN': _token },
         url: '/registro/',
         method: 'POST',
         type: 'POST',
@@ -596,70 +572,9 @@ function save_registro() {
 
             return xhr;
         }
-    });
+    });    
 
-
-
-
-  // console.log(formData.get('multiplos_aquivos'));
-  // xhr.open('post', '/registro/');
-  // xhr.setRequestHeader('X-CSRF-TOKEN', _token);
-  // xhr.send(formData);
-
-  // $('#sobrenome_avo_materna').val()
- 
-  // $.ajax({
-  //     url: '/registro/',
-  //     cache: false,
-  //     contentType: 'multipart/form-data; boundary=something',
-  //     type: 'POST',
-  //     data: {
-  //         'id'                        : $('#id').val(),
-  //         'tipo_registro'             : $('#tipo_registro').val(),
-  //         'livro'                     : $('#livro').val(),
-  //         'folha'                     : $('#folha').val(),
-  //         'termo'                     : $('#termo').val(),
-  //         'local_registro'            : $('#local_registro').val(),
-  //         'data_registro'             : $('#data_registro').val(),
-  //         'data_fato'                 : $('#data_fato').val(),
-  //         'id_uf'                     : $('#id_uf').val(),
-  //         'uf'                        : $('#uf').val(),
-  //         'id_cidade'                 : $('#id_cidade').val(),
-  //         'cidade'                    : $('#cidade').val(),
-  //         'id_religiao'               : $('#id_religiao').val(),
-  //         'religiao'                  : $('#religiao').val(),
-  //         'nome'                      : $('#nome').val(),
-  //         'sobrenome'                 : $('#sobrenome').val(),
-  //         'estado_civil'              : $('#estado_civil').val(),
-  //         'avos_registrados'          : $('#avos_registrados').val(),
-  //         'nacionalidade_sobrenome'   : $('#nacionalidade_sobrenome').val(),
-  //         'declarante'                : $('#declarante').val(),
-  //         'declarante_terceiro'       : $('#declarante_terceiro').val(),
-  //         'nome_conjuge'              : $('#nome_conjuge').val(),
-  //         'sobrenome_conjuge'         : $('#sobrenome_conjuge').val(),
-  //         'nome_pai'                  : $('#nome_pai').val(),
-  //         'sobrenome_pai'             : $('#sobrenome_pai').val(),
-  //         'nome_mae'                  : $('#nome_mae').val(),
-  //         'sobrenome_mae'             : $('#sobrenome_mae').val(),
-  //         'nome_avo_paterno'          : $('#nome_avo_paterno').val(),
-  //         'sobrenome_avo_paterno'     : $('#sobrenome_avo_paterno').val(),
-  //         'nome_avo_paterna'          : $('#nome_avo_paterna').val(),
-  //         'sobrenome_avo_paterna'     : $('#sobrenome_avo_paterna').val(),
-  //         'nome_avo_materno'          : $('#nome_avo_materno').val(),
-  //         'sobrenome_avo_materno'     : $('#sobrenome_avo_materno').val(),
-  //         'nome_avo_materna'          : $('#nome_avo_materna').val(),
-  //         'sobrenome_avo_materna'     : $('#sobrenome_avo_materna').val(),      
-  //     },
-
-
-  //     success: function(data){
-
-  //       console.log(data);
-  //     }
-  // });
-
-  // }
-     
+  }
 
 }
 
@@ -672,11 +587,12 @@ function clearforms($form)
 function uploadProgressHandler(event) {
 
   $('#div_barra_progresso').show();
-  $('#label_barra_progresso').html("Carregando arquivos " + event.loaded + " bytes de " + event.total);
+  $('#label_barra_progresso').html("Carregando arquivos " + (event.loaded / 1000000).toFixed(3) + " MB de " + (event.total / 1000000).toFixed(3));
 
   // $("#label_barra_progresso").html("Carregando arquivos " + event.loaded + " bytes de " + event.total);
   var percent = (event.loaded / event.total) * 100;
   var progress = Math.round(percent);
+
   $("#barra_progresso").html(progress + "%");
   $("#barra_progresso").css("width", progress + "%");
   $("#barra_progresso").attr('aria-valuenow', progress);
@@ -684,9 +600,38 @@ function uploadProgressHandler(event) {
 }
 
 function loadHandler(event) {
-  // $("#label_barra_progresso").html(event.target.responseText);
-  $("#barra_progresso").css("width", "0%");
-  $("#barra_progresso").attr('aria-valuenow', "0");
+  
+  console.log(JSON.parse(event.currentTarget.response));
+
+  var retorno = JSON.parse(event.currentTarget.response);
+
+  if (retorno.arquivos === 0) {
+
+    $("#id_registro").val(retorno.id_registro);
+    $("#div_lista_arquivos").hide();
+
+  } else {
+
+    $("#id_registro").val(retorno.id_registro);
+
+    $("#div_lista_arquivos").show();
+
+    $("#card_arquivos").empty();
+
+    $.each(retorno.arquivos, function(index, arquivo) {
+
+      $("#card_arquivos").append('<p><a href="/registro/arquivo/' + arquivo.id + '" target="_blank">' + arquivo.nome_arquivo + '</a></p>');
+    
+    });
+
+  }
+
+  $("#upload_arquivos").attr('class', "collapse");
+
+  $("#barra_progresso").css("width", "100%");
+  $("#barra_progresso").attr('aria-valuenow', "100");
+  $('#label_barra_progresso').html("Carregamento concluído e Registro Salvo");
+
 }
 
 function errorHandler(event) {
@@ -696,30 +641,6 @@ function errorHandler(event) {
 function abortHandler(event) {
   $("#label_barra_progresso").html("Carregamnto Abortado");
 }
-
-
-
-// $(function() {
-//   // var esportes = [
-//   //   "Natação",
-//   //   "Futebol",
-//   //   "Vôlei",
-//   //   "Basquete"
-//   // ];
-
-//   var esportes = [ 
-//   { label: "Natação", value: "1" }, 
-//   { label: "Futebol", value: "2" }, 
-//   { label: "Vôlei", value: "3" },
-//   { label: "Basquete", value: "4" } 
-//   ];
-
-//   $("#teste" ).autocomplete({
-//     source: esportes,
-//     minLength: 1,
-//   });
-// });
-
 
  // var len = response.length;
       // for(var i=0; i<len; i++){

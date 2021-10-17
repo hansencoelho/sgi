@@ -47,7 +47,8 @@ route::group(["prefix" => "registro"], function() {
     Route::get('', 'ControllerRegistro@index')->name('registro');
     // Route::get('/create', 'ControllerUsuario@create')->name('registro.create');
     Route::get('/show/{id_registro}', 'ControllerRegistro@show')->name('registro.show');
-    Route::get('/new/', 'ControllerRegistro@new')->name('registro.new');
+    Route::get('/create/', 'ControllerRegistro@create')->name('registro.create');
+    Route::get('/arquivo/{id_arquivo}', 'ControllerRegistro@arquivo');
 
     // ## POST CRUD ##
     Route::post('/', 'ControllerRegistro@store')->name('registro.store');

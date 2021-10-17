@@ -18,7 +18,7 @@
   <div class="row row-cols-2">
     <div class="col-md-10">
 
-      <button type="button" onclick="new_registro()" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modal_registro">
+      <button type="button" onclick="create_registro()" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modal_registro">
       <i class="fa fa-plus fa-lg"></i> Novo</button>
 
       <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#pesquisar" aria-expanded="false">
@@ -304,20 +304,50 @@
           </div>
         </div>
 
-        <!-- Upload de Arquivos -->
-        <div class="row mb-3 g-3">
+        <!-- Lista de Arquivos -->
+        <div class="row mb-3 g-3" id="div_lista_arquivos" style="display: none;">
+
           <div class="col-sm-6">
-            <label for="multiplos_arquivos" class="form-label">Selecione os Arquivos:</label>
-            <input class="form-control form-control-sm" type="file" id="multiplos_arquivos" name="multiplos_arquivos[]" multiple/>
+            <button class="btn btn-sm btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#lista_arquivos" aria-expanded="false">
+            <i class="far fa-file fa-lg"></i> Arquivos Carregados</button>
           </div>
+          
+          <div class="collapse" id="lista_arquivos">
+            <div class="card card-body">
+              <div class="col-sm-6" id="card_arquivos">
+               
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Upload de Arquivos -->
+        <div class="row mb-3 g-3" id="div_upload_arquivos">
+
+          <div class="col-sm-6">
+            <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#upload_arquivos" aria-expanded="false">
+            <i class="fa fa-file-upload fa-lg"></i> Upload de Arquivos</button>
+          </div>
+          
+          <div class="collapse" id="upload_arquivos">
+            <div class="card card-body">
+              <div class="col-sm-6">
+                <label for="multiplos_arquivos" class="form-label">Selecione os Arquivos:</label>
+                <input class="form-control form-control-sm" type="file" id="multiplos_arquivos" name="multiplos_arquivos[]" multiple/>
+              </div>
+            </div>
+          </div>
+
         </div>
 
         <!-- Barra de Progresso -->
         <div class="row mb-3 g-3" id="div_barra_progresso" style="display: none;">
-          <label class="form-label" id="label_barra_progresso"></label>
-          <div class="progress" id="barra_progresso">
-            <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">0%</div>
+        <!-- style="display: none;" -->
+          <div class="progress">
+            <div id="barra_progresso" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
           </div>
+          <label class="form-label" id="label_barra_progresso"></label>
         </div>
 
         <!-- Botões de Ação -->
