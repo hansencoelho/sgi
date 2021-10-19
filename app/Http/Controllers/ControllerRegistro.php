@@ -343,8 +343,6 @@ class ControllerRegistro extends Controller
 
                 foreach ($request->multiplos_arquivos as $key => $arquivo){
 
-                    // dd($arquivo->getClientOriginalName());
-
                     $key = $key + 1;
                     $extensao = $arquivo->getClientOriginalExtension();
                     $arquivo->storeAs('arquivos_registros'.'/'.$registro->id, $arquivo->getClientOriginalName());
@@ -436,10 +434,6 @@ class ControllerRegistro extends Controller
 
         $dados = array();  
         $dados = (object) $dados;
-        
-        // $dados->registro = 'show';
-        // $dados['teste'] = 123;
-        // $dados->show->registros =  [ 0 => 'karen', 1 => 'rodrigo'];
 
         $dados->registro = Registro::select(
 
@@ -466,31 +460,32 @@ class ControllerRegistro extends Controller
             ->leftjoin('estado_civil AS cv', 'registro.fk_estado_civil', '=', 'cv.id')
             ->leftjoin('religiao AS rl', 'registro.fk_religiao', '=', 'rl.id')
             ->where('registro.id' , '=' , $id_usuario)
-            // ->orderBy('name', 'ASC')
             ->get();
+
+        $caminho_arquivo = CaminhoArquivo::select('*')
+        ->where('fk_registro', '=', $id_usuario)
+        ->get();
+
+
+        if ($caminho_arquivo !== "[]") {
+
+            $dados->arquivos = $caminho_arquivo;
+
+        } else {
+
+            $dados->arquivos = 0;
+
+        }
 
         $dados->tipo_registro = TipoRegistro::all();
         $dados->tipo_local_registro = TipoLocalRegistro::all();
         $dados->declarante = Declarante::all();
         $dados->tipo_registro = TipoRegistro::all();
         $dados->estado_civil = EstadoCivil::all();
-        // $dados->religiao = Religiao::all();
-        // $dados->uf = Uf::all();
-        // $dados->cidade = Cidade::all();
         $dados->nacionalidade_sobrenome = NacionalidadeSobrenome::all();
-
-        // dd($dados);
 
         $dados->titulo = "Visualizar - Registro";
   
-        
-
-        // return view('admin.usuario.formulario', compact(
-        //     'titulo',
-        //     'grupo_usuario',
-        //     'usuario',
-        // ));
-
         return response()->json($dados);
 
         }

@@ -309,7 +309,7 @@
 
           <div class="col-sm-6">
             <button class="btn btn-sm btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#lista_arquivos" aria-expanded="false">
-            <i class="far fa-file fa-lg"></i> Arquivos Carregados</button>
+            <i class="far fa-file fa-lg"></i> Arquivos</button>
           </div>
           
           <div class="collapse" id="lista_arquivos">

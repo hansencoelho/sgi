@@ -279,31 +279,35 @@ function create_registro() {
       $('#tipo_registro').append('<option value="" selected="selected"></option>');
       $.each(tipo_registro, function(index, obj) {
         $('#tipo_registro').append('<option value="'+ obj.id +'">'+ obj.descricao +'</option>');
-      })
+      });
 
       $('#tipo_local_registro').empty();
       $('#tipo_local_registro').append('<option value="" selected="selected"></option>');
       $.each(tipo_local_registro, function(index, obj) {
         $('#tipo_local_registro').append('<option value="'+ obj.id +'">'+ obj.descricao +'</option>');
-      })
+      });
 
       $('#declarante').empty();
       $('#declarante').append('<option value="" selected="selected"></option>');
       $.each(declarante, function(index, obj) {
         $('#declarante').append('<option value="'+ obj.id +'">'+ obj.descricao +'</option>');
-      })
+      });
 
       $('#nacionalidade_sobrenome').empty();
       $('#nacionalidade_sobrenome').append('<option value="" selected="selected"></option>');
       $.each(nacionalidade_sobrenome, function(index, obj) {
         $('#nacionalidade_sobrenome').append('<option value="'+ obj.id +'">'+ obj.descricao +'</option>');
-      })
+      });
 
       $('#estado_civil').empty();
       $('#estado_civil').append('<option value="" selected="selected"></option>');
       $.each(estado_civil, function(index, obj) {
         $('#estado_civil').append('<option value="'+ obj.id +'">'+ obj.descricao +'</option>');
-      })
+      });
+
+      $("#div_lista_arquivos").hide();
+    
+      $("#card_arquivos").empty();
 
       $('#button_modal').attr('onclick','save_registro();');
       $('#titulo_modal').html(titulo);
@@ -339,6 +343,9 @@ function show_registro(id_registro) {
       var declarante = response['declarante'];
       var nacionalidade_sobrenome = response['nacionalidade_sobrenome'];
       var estado_civil = response['estado_civil'];
+      var arquivos = response['arquivos'];
+
+      console.log(arquivos);
 
       $('#id').val(registro.id);
       $('#livro').val(registro.livro);
@@ -486,6 +493,35 @@ function show_registro(id_registro) {
         break;
   
       }
+
+      if ( arquivos === 0) {
+
+        // $("#id_registro").val(retorno.id_registro);
+        $("#div_lista_arquivos").hide();
+    
+      } else {
+    
+        // $("#id_registro").val(retorno.id_registro);
+    
+        $("#div_lista_arquivos").show();
+    
+        $("#card_arquivos").empty();
+    
+        $.each(arquivos, function(index, arquivo) {
+    
+          $("#card_arquivos").append('<p><a href="/registro/arquivo/' + arquivo.id + '" target="_blank">' + arquivo.nome_arquivo + '</a></p>');
+        
+        });
+    
+      }
+
+      $("#lista_arquivos").attr('class', "collapse show");
+    
+      $("#upload_arquivos").attr('class', "collapse");
+    
+      $("#barra_progresso").css("width", "100%");
+      $("#barra_progresso").attr('aria-valuenow', "100");
+      $('#label_barra_progresso').html("Carregamento concluído e Registro Salvo");
 
       $('#tipo_registro').empty();
       $.each(tipo_registro, function(index, obj) {
