@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Storage;
 use File;
 use Auth;
 use Response;
+use Filesystem;
 
 class ControllerRegistro extends Controller
 {
@@ -65,12 +66,17 @@ class ControllerRegistro extends Controller
         ->orderBy('nome', 'ASC')
         ->get();
 
+        $tipo_registro = TipoRegistro::all();
+        $tipo_local_registro = TipoLocalRegistro::all();
+
         $contagem = $registro->count();
         $titulo = 'Registro';
         
 
         return view('registro.view', compact(
             'registro',
+            'tipo_registro',
+            'tipo_local_registro',
             'titulo',
             'contagem',
             
@@ -81,58 +87,88 @@ class ControllerRegistro extends Controller
 
     public function find(Request $request)
     {
-        if( Gate::denies('usuario-view')) {
+        if( Gate::denies('registro-view')) {
 
             abort(403, 'Não autorizado');
     
             } else {
 
-            $pesquisa_opcao = $request->pesquisa_opcao;
-            $texto          = $request->pesquisa_texto;
+                // dd($request);
+
+            $tipo_registro          = $request->pesquisa_tipo_registro;
+            $tipo_local_registro    = $request->pesquisa_tipo_local_registro;
+            $pesquisa_opcao         = $request->pesquisa_opcao;
+            $texto                  = $request->pesquisa_texto;
+
 
             switch ($pesquisa_opcao) {
             case 1:
-                $pesquisa_opcao = 'users.name';
+                $pesquisa_opcao = 'registro.nome';
                 break;
             case 2:
-                $pesquisa_opcao = 'email'; 
+                $pesquisa_opcao = 'registro.sobrenome'; 
                 break;
             case 3:
-                $pesquisa_opcao = 'username'; 
+                $pesquisa_opcao = 'registro.local_registro'; 
                 break;
 
             default:
-                $pesquisa_opcao = 'name'; 
+                $pesquisa_opcao = 'registro.nome'; 
                 break;
         
             }
         
-            $usuario = User::select(
-        
-                'id                 AS ID_USUARIO',
-                'name               AS NOME',
-                'email              AS EMAIL',
-                'username           AS USERNAME',
-                'departamento       AS AREA',
-                'gu.DESCRICAO       AS GRUPO_USUARIO',
-                'FK_GRUPO_USUARIO   AS ID_GRUPO_USUARIO',    
-                )
-                ->leftjoin('acl_grupo_usuario AS gu', 'users.FK_GRUPO_USUARIO', '=', 'gu.ID_ACL_GRUPO_USUARIO')
+            $registro = Registro::select(
 
-                ->where($pesquisa_opcao, 'LIKE','%'.$texto.'%')
-                ->orderby('name', 'ASC')
-                ->get();
+                'registro.id                AS id',
+                'data_registro              AS data_registro',
+                'nome                       AS nome',
+                'sobrenome                  AS sobrenome',
+                'nome_pai                   AS nome_pai',
+                'nome_mae                   AS nome_mae',
+                'nome_pai                   AS nome_pai',
+                'livro                      AS livro',
+                'folha                      AS folha',
+                'termo                      AS termo',
+                'tr.descricao               AS tipo_registro',
+                're.descricao               AS religicao',
+                'local_registro             AS local_registro',
+                'tlr.descricao              AS tipo_local_registro',
+    
+            )
+    
+            ->leftjoin('tipo_registro AS tr', 'registro.fk_tipo_registro', '=', 'tr.id')
+            ->leftjoin('religiao AS re', 'registro.fk_religiao', '=', 're.id')
+            ->leftjoin('tipo_local_registro AS tlr', 'registro.fk_tipo_local_registro', '=', 'tlr.id')
 
-            $contagem = $usuario->count();
-            $titulo = 'Usuário';
+            ->where( $pesquisa_opcao ,'LIKE','%'.$request->pesquisa_texto.'%')
+            ->where('registro.fk_tipo_registro', 'LIKE', $request->pesquisa_tipo_registro)
+            ->where('registro.fk_tipo_local_registro', 'LIKE', $request->pesquisa_tipo_local_registro)
+            // ->where('u.FK_NRSC', 'LIKE', $request->pesquisa_regional)
+            // ->where('l.FK_FORNECEDOR', 'LIKE', $request->pesquisa_fornecedor)
+            // ->where('linha_movel.FK_STATUS_LINHA_MOVEL', 'LIKE', $pesquisa_status)
+            // ->where('us.id' , '=', $id_usuario)
+
+            ->orderBy('nome', 'ASC')
+            ->get();
+
+            $tipo_registro = TipoRegistro::all();
+            $tipo_local_registro = TipoLocalRegistro::all();
+
+            $contagem = $registro->count();
+            $titulo = 'Registro';
 
             $pesquisa_retorno = [
+                'pesquisa_tipo_registro' => $request->pesquisa_tipo_registro,
+                'pesquisa_tipo_local_registro' => $request->pesquisa_tipo_local_registro,
                 'pesquisa_opcao' => $request->pesquisa_opcao,
                 'pesquisa_texto' => $request->pesquisa_texto,
             ];        
 
-            return view('admin.usuario.listagem', compact(
-                'usuario',
+            return view('registro.view', compact(
+                'registro',
+                'tipo_registro',
+                'tipo_local_registro',
                 'contagem',
                 'titulo',
                 'pesquisa_retorno',
@@ -251,7 +287,6 @@ class ControllerRegistro extends Controller
         $dados->tipo_registro = TipoRegistro::all();
         $dados->tipo_local_registro = TipoLocalRegistro::all();
         $dados->declarante = Declarante::all();
-        $dados->tipo_registro = TipoRegistro::all();
         $dados->estado_civil = EstadoCivil::all();
         $dados->nacionalidade_sobrenome = NacionalidadeSobrenome::all();
 
@@ -423,7 +458,7 @@ class ControllerRegistro extends Controller
 
 
 
-    public function show($id_usuario)
+    public function show($id_registro)
     {
 
         if( Gate::denies('registro-view')) {
@@ -459,11 +494,11 @@ class ControllerRegistro extends Controller
             ->leftjoin('nacionalidade_sobrenome AS ns', 'registro.fk_nacionalidade_sobrenome', '=', 'ns.id')
             ->leftjoin('estado_civil AS cv', 'registro.fk_estado_civil', '=', 'cv.id')
             ->leftjoin('religiao AS rl', 'registro.fk_religiao', '=', 'rl.id')
-            ->where('registro.id' , '=' , $id_usuario)
+            ->where('registro.id' , '=' , $id_registro)
             ->get();
 
         $caminho_arquivo = CaminhoArquivo::select('*')
-        ->where('fk_registro', '=', $id_usuario)
+        ->where('fk_registro', '=', $id_registro)
         ->get();
 
 
@@ -495,53 +530,183 @@ class ControllerRegistro extends Controller
     public function update(Request $request)
     {
 
-        if( Gate::denies('usuario-edit')) {
+        if(Gate::denies('registro-edit')) {
 
             abort(403, 'Não autorizado. Você não tem permissão de editar.');
     
         } else {
 
-            $update = User::where('id', '=', $request->ID_USUARIO)->update([
+            // dd('teste');
 
-            'FK_GRUPO_USUARIO'          => $request->ID_GRUPO_USUARIO,
+            $update = Registro::where('id', '=', $request->id)->update([
+
+                'data_registro'                   => $request->data_fato,
+                'data_fato'                       => $request->data_registro,
+                'termo'                           => $request->termo,
+                'folha'                           => $request->folha,
+                'livro'                           => $request->livro,
+                'fk_cidade'                       => $request->id_cidade,
+                'nome'                            => $request->nome,
+                'sobrenome'                       => $request->sobrenome,
+                'nome_pai'                        => $request->nome_pai,
+                'sobrenome_pai'                   => $request->sobrenome_pai,
+                'nome_mae'                        => $request->nome_mae,
+                'sobrenome_mae'                   => $request->sobrenome_mae,
+                'fk_tipo_registro'                => $request->tipo_registro,
+                'fk_tipo_local_registro'          => $request->tipo_local_registro,
+                'local_registro'                  => $request->local_registro,
+                'fk_nacionalidade_sobrenome'      => $request->nacionalidade_sobrenome,
+                'fk_religiao'                     => $request->id_religiao,
+                'fk_declarante'                   => $request->declarante,
+                'declarante_terceiro'             => $request->declarante_terceiro,
+                'fk_estado_civil'                 => $request->estado_civil,
+                'nome_conjuge'                    => $request->nome_conjuge,
+                'sobrenome_conjunge'              => $request->sobrenome_conjunge,
+                'nome_avo_paterno'                => $request->nome_avo_paterno,
+                'sobrenome_avo_paterno'           => $request->sobrenome_avo_paterno,
+                'nome_avo_paterna'                => $request->nome_avo_paterna,
+                'sobrenome_avo_paterna'           => $request->sobrenome_avo_paterna,
+                'nome_avo_materno'                => $request->nome_avo_materno,
+                'sobrenome_avo_materno'           => $request->sobrenome_avo_materno,
+                'nome_avo_materna'                => $request->nome_avo_materna,
+                'sobrenome_avo_materna'           => $request->sobrenome_avo_materna,
 
             ]);
 
-            $usuario = User::select(
-        
-                'id                 AS ID_USUARIO',
-                'name               AS NOME',
-                'email              AS EMAIL',
-                'username           AS USERNAME',
-                'departamento       AS AREA',
-                'gu.DESCRICAO       AS GRUPO_USUARIO',
-                'FK_GRUPO_USUARIO   AS ID_GRUPO_USUARIO',
-                'users.created_at   AS INTEGRADO',
-                'users.updated_at   AS ATUALIZADO',
-        
-        
-                )
-                ->leftjoin('acl_grupo_usuario AS gu', 'users.FK_GRUPO_USUARIO', '=', 'gu.ID_ACL_GRUPO_USUARIO')
-                ->where('id' , '=' , $request->ID_USUARIO)
-                ->orderBy('name', 'ASC')
-                ->get();
-    
-            $grupo_usuario = AclGrupoUsuario::all();
-    
-            $titulo = "Usuário";
-            $mensagem = "Usuário alterado com sucesso.";
-    
-            return view('admin.usuario.formulario', compact(
-                'titulo',
-                'mensagem',
-                'usuario',
-            ));
+            if ($update == 1) {
 
+                $registro = array();  
+                $registro = (object) $registro;
+
+                $registro->id = $request->id;
+
+                if ($request->multiplos_arquivos != "") {
+
+                    foreach ($request->multiplos_arquivos as $key => $arquivo){
+
+                        $key = $key + 1;
+                        $extensao = $arquivo->getClientOriginalExtension();
+                        $arquivo->storeAs('arquivos_registros'.'/'.$registro->id, $arquivo->getClientOriginalName());
+
+                        $caminho_arquivo = new CaminhoArquivo;
+                        $caminho_arquivo->diretorio         = $registro->id;
+                        $caminho_arquivo->nome_arquivo      = $arquivo->getClientOriginalName();
+                        $caminho_arquivo->fk_registro       = $registro->id;
+                        $insert = $caminho_arquivo->save();
+
+                    }
+
+                }
+
+                $caminho_arquivo = CaminhoArquivo::select('*')
+                ->where('fk_registro', '=', $registro->id)
+                ->get();
+
+                $dados = array();  
+                $dados = (object) $dados;
+
+                $dados->id_registro = $registro->id;
+
+                if ($caminho_arquivo !== "[]") {
+
+                    $dados->arquivos = $caminho_arquivo;
+        
+                } else {
+
+                    $dados->arquivos = 0;
+
+                }
+
+            
+            
+            return response()->json($dados);
+
+            } else {
+
+                return 0;
+
+            }
                     
         }
 
     }
 
+    public function delete(Request $request)
+    {
+
+        if( Gate::denies('registro-view')) {
+
+            abort(403, 'Não autorizado. Você não tem permissão de visualizar.');
+    
+        } else {
+
+
+            $caminho_arquivo = CaminhoArquivo::select('*')
+            ->where('fk_registro', '=', $request->id_registro)
+            ->get();
+
+            if ($caminho_arquivo !== "[]") {
+
+                foreach ($caminho_arquivo as $arquivo){
+
+                $delete = CaminhoArquivo::where('id', $arquivo->id )->delete();
+
+                }
+    
+            }
+
+            $delete = Registro::where('id', $request->id_registro)->delete();
+
+            $delete_diretorio = Storage::deleteDirectory('arquivos_registros/'.$request->id_registro);
+
+            if ($delete != 0) {
+
+                $retorno = 1; 
+
+            } else {
+
+                $retorno = 0;
+
+            }
+
+            return response()->json($retorno);
+
+        }
+
+    }
+
+    public function delete_arquivo(Request $request)
+    {
+
+        if( Gate::denies('registro-view')) {
+
+            abort(403, 'Não autorizado. Você não tem permissão de visualizar.');
+    
+        } else {
+
+            $caminho_arquivo = CaminhoArquivo::select('*')
+            ->where('fk_registro', '=', $request->id_registro)
+            ->get();
+
+            $delete_registro = CaminhoArquivo::where('id', $request->id_arquivo )->delete();
+
+            $delete_arquivos = Storage::delete('arquivos_registros/'.$request->id_registro.'/'.$caminho_arquivo[0]->nome_arquivo);
+
+            if ($delete_registro != 0) {
+
+                $retorno = 1; 
+
+            } else {
+
+                $retorno = 0;
+
+            }
+
+            return response()->json($retorno);
+
+        }
+
+    }
 
     public function autocomplete_uf(Request $request)
     {
@@ -611,5 +776,10 @@ class ControllerRegistro extends Controller
         }
 
     }
+
+
+    
+   
+
 
 }

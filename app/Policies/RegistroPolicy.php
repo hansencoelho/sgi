@@ -42,7 +42,7 @@ class RegistroPolicy
     public function consulta_permissao(){
 
         $id_usuario = Auth::user()->id;
-        $modulo = 1;
+        $modulo = 3;
 
         $acl_acesso = AclAcesso::select(
             'acl_acesso.fk_acl_permissao AS PERMISSAO'

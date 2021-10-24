@@ -345,8 +345,6 @@ function show_registro(id_registro) {
       var estado_civil = response['estado_civil'];
       var arquivos = response['arquivos'];
 
-      console.log(arquivos);
-
       $('#id').val(registro.id);
       $('#livro').val(registro.livro);
       $('#folha').val(registro.folha);
@@ -373,10 +371,10 @@ function show_registro(id_registro) {
           $('#div_nome_conjuge').hide();
           $('#div_sobrenome_conjuge').hide();
           
-          $('#div_estado_civil').removeAttr('required');
-          $('#div_religiao').removeAttr('required');
-          $('#div_nome_conjuge').removeAttr('required');
-          $('#div_sobrenome_conjuge').removeAttr('required');
+          $('#estado_civil').removeAttr('required');
+          $('#religiao').removeAttr('required');
+          $('#nome_conjuge').removeAttr('required');
+          $('#sobrenome_conjuge').removeAttr('required');
   
           $('#div_declarante').show();
           $('#div_religiao').show();
@@ -494,29 +492,24 @@ function show_registro(id_registro) {
   
       }
 
-      if ( arquivos === 0) {
+      if ( arquivos == 0) {
 
-        // $("#id_registro").val(retorno.id_registro);
         $("#div_lista_arquivos").hide();
     
       } else {
     
-        // $("#id_registro").val(retorno.id_registro);
-    
         $("#div_lista_arquivos").show();
-    
         $("#card_arquivos").empty();
     
         $.each(arquivos, function(index, arquivo) {
     
-          $("#card_arquivos").append('<p><a href="/registro/arquivo/' + arquivo.id + '" target="_blank">' + arquivo.nome_arquivo + '</a></p>');
+          $("#card_arquivos").append('<p id=arquivo_' + arquivo.id + '><a href="/registro/arquivo/' + arquivo.id + '" target="_blank">' + arquivo.nome_arquivo + '</a> <a href="#" onclick="delete_arquivo(' + arquivo.id + ')"> <i style="color: #dc3545;" class="fa fa-trash-alt fa-lg"></i></a></p>');
         
         });
     
       }
 
       $("#lista_arquivos").attr('class', "collapse show");
-    
       $("#upload_arquivos").attr('class', "collapse");
     
       $("#barra_progresso").css("width", "100%");
@@ -572,8 +565,6 @@ function save_registro() {
 
   })
 
-  console.log(count);
-
   if (count > 0) {
 
     alert('Todos os campos devem ser preenchidos antes de salvar o registro!');
@@ -614,7 +605,7 @@ function save_registro() {
 
 }
 
-function clearforms($form)
+function clearforms(form)
 {
     $(':input', ':hidden', ':select').not(':button, :submit, :reset, :checkbox, :radio').val('');
     $(':checkbox, :radio').prop('checked', false);
@@ -623,7 +614,7 @@ function clearforms($form)
 function uploadProgressHandler(event) {
 
   $('#div_barra_progresso').show();
-  $('#label_barra_progresso').html("Carregando arquivos " + (event.loaded / 1000000).toFixed(3) + " MB de " + (event.total / 1000000).toFixed(3));
+  $('#label_barra_progresso').html("Carregando dados " + (event.loaded / 1000000).toFixed(3) + " MB de " + (event.total / 1000000).toFixed(3) + " MB");
 
   // $("#label_barra_progresso").html("Carregando arquivos " + event.loaded + " bytes de " + event.total);
   var percent = (event.loaded / event.total) * 100;
@@ -637,36 +628,48 @@ function uploadProgressHandler(event) {
 
 function loadHandler(event) {
   
-  console.log(JSON.parse(event.currentTarget.response));
+  // console.log(event);
 
-  var retorno = JSON.parse(event.currentTarget.response);
+  var retorno = JSON.parse(event.currentTarget.status);
 
-  if (retorno.arquivos === 0) {
+  if (retorno == 403) {
 
-    $("#id_registro").val(retorno.id_registro);
-    $("#div_lista_arquivos").hide();
-
+  alert("Você não possui permissão para essa ação!");
+  
   } else {
 
-    $("#id_registro").val(retorno.id_registro);
+    var retorno = JSON.parse(event.currentTarget.response);
 
-    $("#div_lista_arquivos").show();
+    if (retorno.arquivos === 0) {
 
-    $("#card_arquivos").empty();
+      $("#id_registro").val(retorno.id_registro);
+      $("#div_lista_arquivos").hide();
 
-    $.each(retorno.arquivos, function(index, arquivo) {
+    } else {
 
-      $("#card_arquivos").append('<p><a href="/registro/arquivo/' + arquivo.id + '" target="_blank">' + arquivo.nome_arquivo + '</a></p>');
-    
-    });
+      $("#id_registro").val(retorno.id_registro);
 
-  }
+      $("#div_lista_arquivos").show();
 
-  $("#upload_arquivos").attr('class', "collapse");
+      $("#card_arquivos").empty();
 
-  $("#barra_progresso").css("width", "100%");
-  $("#barra_progresso").attr('aria-valuenow', "100");
-  $('#label_barra_progresso').html("Carregamento concluído e Registro Salvo");
+      $.each(retorno.arquivos, function(index, arquivo) {
+
+        $("#card_arquivos").append('<p id=arquivo_' + arquivo.id + '><a href="/registro/arquivo/' + arquivo.id + '" target="_blank">' + arquivo.nome_arquivo + '</a> <a href="#" onclick="delete_arquivo(' + arquivo.id + ')"> <i style="color: #dc3545;" class="fa fa-trash-alt fa-lg"></i></a></p>');
+      
+      });
+
+    }
+
+    $("#upload_arquivos").attr('class', "collapse");
+
+    $("#barra_progresso").css("width", "100%");
+    $("#barra_progresso").attr('aria-valuenow', "100");
+    $('#label_barra_progresso').html("Carregamento concluído");
+
+    alert("Registro salvo com sucesso!");
+
+    }
 
 }
 
@@ -678,21 +681,152 @@ function abortHandler(event) {
   $("#label_barra_progresso").html("Carregamnto Abortado");
 }
 
- // var len = response.length;
-      // for(var i=0; i<len; i++){
 
-          // var id = response[i].id;
-          // var username = response[i].username;
-          // var name = response[i].name;
-          // var email = response[i].email;
+function change_registro() {
 
-          // var tr_str = "<tr>" +
-          //     "<td align='center'>" + (i+1) + "</td>" +
-          //     "<td align='center'>" + username + "</td>" +
-          //     "<td align='center'>" + name + "</td>" +
-          //     "<td align='center'>" + email + "</td>" +
-          //     "</tr>";
+  var count = 0
+  var forms = document.querySelectorAll("[required]");
 
-          // $("#userTable tbody").append(tr_str);
-      // }
+  $.each(forms, function(index, form) {
 
+    if (form.value === '') {
+
+      count = count + 1;
+    
+    }
+
+  })
+
+  if (count > 0) {
+
+    alert('Todos os campos devem ser preenchidos antes de salvar o registro!');
+
+    return false;
+
+  } else {
+
+    var _token = $('meta[name="_token"]').attr('content');
+
+    const formData = new FormData(formulario);
+
+    $.ajax({
+        headers: { 'X-CSRF-TOKEN': _token },
+        url: '/registro/update',
+        method: 'POST',
+        type: 'POST',
+        data: formData,
+        cache: false,
+        contentType: false,
+        // contentType: 'multipart/form-data',
+        processData: false,
+        xhr: function () {
+            var xhr = new window.XMLHttpRequest();
+            xhr.upload.addEventListener("progress",
+                uploadProgressHandler,
+                false
+            );
+            xhr.addEventListener("load", loadHandler, false);
+            xhr.addEventListener("error", errorHandler, false);
+            xhr.addEventListener("abort", abortHandler, false);
+
+            return xhr;
+        }
+    });    
+
+  }
+
+}
+
+function delete_registro(id_registro) {
+
+  var resposta = confirm("Deseja remover esse registro?");
+
+  if (resposta == true) {
+
+    $.ajax({
+      url: '/registro/delete/'+id_registro,
+      type: 'get',
+      dataType: 'JSON',
+      beforeSend: function () {
+        
+        $('#div_carregamento').show();
+        
+      },       
+      success: function(response){
+
+        $('#div_carregamento').hide();
+
+        if (response === 1) {
+
+          $("#registro_" + id_registro).closest('tr').remove();
+
+          var contador = $('#contador_resultado').html();
+          var contador = contador.split("").filter(n => (Number(n) || n == 0)).join("");
+          var contador = (parseInt(contador) - 1);
+
+          $('#contador_resultado').html("Resultado(s): " + contador);
+
+          alert("Registro excluído com sucesso!");
+      
+        } else {
+
+          alert("Registro não excluído! Houve um erro durante a exclusão.");
+
+        }
+
+      }
+
+    })
+
+  }
+
+}
+
+
+function delete_arquivo(id_arquivo) {
+
+  var resposta = confirm("Deseja remover esse arquivo?");
+
+  if (resposta == true) {
+
+    $.ajax({
+      url: '/registro/delete_arquivo/'+id_arquivo,
+      type: 'get',
+      dataType: 'JSON',
+      data: { id_registro: $("#id").val() },
+      beforeSend: function () {
+        
+        $('#div_carregamento').show();
+        
+      },       
+      success: function(response){
+
+        $('#div_carregamento').hide();
+
+        if (response === 1) {
+
+          $("#arquivo_" + id_arquivo).remove();
+          
+          // $("#arquivo_" + id_arquivo).closest('tr').remove();
+
+          // var contador = $('#contador_resultado').html();
+          // var contador = contador.split("").filter(n => (Number(n) || n == 0)).join("");
+          // var contador = (parseInt(contador) - 1);
+
+          // $('#contador_resultado').html("Resultado(s): " + contador);
+
+          alert("Arquivo excluído com sucesso!");
+      
+        } else {
+
+          alert("Registro não excluído! Houve um erro durante a exclusão.");
+
+        }
+
+      }
+
+    })
+
+  }
+
+}

@@ -31,7 +31,7 @@
     </div>  
 
     <div class="col-md-2 aling-left">
-      <h6 style="text-align: right;">Resultado(s): @if (isset($contagem)) {{ $contagem }} @endif </h6>
+      <h6 style="text-align: right;" id="contador_resultado">Resultado(s): @if (isset($contagem)) {{ $contagem }} @endif </h6>
     </div>
   </div>
 </div>
@@ -40,14 +40,34 @@
 
 <div class="@if(isset($pesquisa_retorno)){{'collapse show'}}@else{{'collapse'}}@endif" id="pesquisar">
     <div class="card card-body">
-        <form class="row g-12" method="POST" action="{{ route('usuario.find') }}">
+        <form class="row g-12" method="POST" action="{{ route('registro.find') }}">
         {{ csrf_field() }}
         
             <div class="col-sm-2">
+              <select id="pesquisa_tipo_registro" name="pesquisa_tipo_registro" class="form-select form-select-sm">
+                <option value="">Tipo de Registro...</option>
+                @forelse($tipo_registro as $tb_tipo_registro)
+                <option value="{{ $tb_tipo_registro['id'] }}" @if ( isset($pesquisa_retorno) && $tb_tipo_registro['id'] == $pesquisa_retorno['pesquisa_tipo_registro'] ) selected="selected" @endif>{{ $tb_tipo_registro['descricao'] }}</option>
+                @empty
+                @endforelse
+              </select>
+            </div>
+
+            <div class="col-sm-2">
+              <select id="pesquisa_tipo_local_registro" name="pesquisa_tipo_local_registro" class="form-select form-select-sm">
+                <option value="">Tipo do Local de Registro...</option>
+                @forelse($tipo_local_registro as $tb_tipo_local_registro)
+                <option value="{{ $tb_tipo_local_registro['id'] }}" @if ( isset($pesquisa_retorno) && $tb_tipo_local_registro['id'] == $pesquisa_retorno['pesquisa_tipo_local_registro'] ) selected="selected" @endif>{{ $tb_tipo_local_registro['descricao'] }}</option>
+                @empty
+                @endforelse
+              </select>
+            </div>
+
+            <div class="col-sm-2">
                 <select id="pesquisa_opcao" name="pesquisa_opcao" class="form-select form-select-sm">
                 <option value="1" @if (isset($pesquisa_retorno) && $pesquisa_retorno['pesquisa_opcao'] == 1 ) selected="selected" @endif>Nome</option>
-                <option value="2" @if (isset($pesquisa_retorno) && $pesquisa_retorno['pesquisa_opcao'] == 2 ) selected="selected" @endif>E-mail</option>
-                <option value="3" @if (isset($pesquisa_retorno) && $pesquisa_retorno['pesquisa_opcao'] == 3 ) selected="selected" @endif>Usuário</option>
+                <option value="2" @if (isset($pesquisa_retorno) && $pesquisa_retorno['pesquisa_opcao'] == 2 ) selected="selected" @endif>Sobrenome</option>
+                <option value="3" @if (isset($pesquisa_retorno) && $pesquisa_retorno['pesquisa_opcao'] == 3 ) selected="selected" @endif>Local de Registro</option>
                 </select>
             </div>
             
@@ -89,7 +109,7 @@
 
     <tbody>
       @forelse($registro as $tb_registro)
-      <tr>
+      <tr id="registro_{{$tb_registro->id}}">
         <td>{{ $tb_registro->tipo_registro }}</td>
         <td>{{ $tb_registro->nome }}</td>
         <td>{{ $tb_registro->sobrenome }}</td>
@@ -98,8 +118,11 @@
         <td>{{ $tb_registro->livro }}</td>
         <td>{{ $tb_registro->folha }}</td>
         <td>{{ $tb_registro->termo }}</td>
-        <td style="text-align: center;"> <a href="#" onclick="show_registro({{ $tb_registro->id }})" data-bs-toggle="modal" data-bs-target="#modal_registro"> <i class="fa fa-eye fa-lg"></i></a></td>
+        <td style="text-align: center;"> 
+        <a href="#" onclick="show_registro({{ $tb_registro->id }})" data-bs-toggle="modal" data-bs-target="#modal_registro"> <i class="fa fa-eye fa-lg"></i></a>
+        <a href="#" onclick="delete_registro({{ $tb_registro->id }})"> <i style="color: #dc3545;" class="fa fa-trash-alt fa-lg"></i></a></td>
         
+
         {{-- <a href="{{ route('usuario.show', ['id_usuario' => $tb_usuario->ID_USUARIO]) }}" target="_blank"><i class="fa fa-eye fa-lg"></i></a> </td> --}}
         {{-- <td style="vertical-align: middle; text-align: center;"><a href="{{ route('admin_user.show', ['id_user' => $tb_usuario->ID_USUARIO]) }}" target="_blank"><i class="fa fa-save fa-lg"></i></a> </td> --}}
       </tr>

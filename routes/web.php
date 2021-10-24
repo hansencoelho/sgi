@@ -45,15 +45,16 @@ route::group(["prefix" => "registro"], function() {
 
     ## GET CRUD ##
     Route::get('', 'ControllerRegistro@index')->name('registro');
-    // Route::get('/create', 'ControllerUsuario@create')->name('registro.create');
+    Route::get('/create', 'ControllerRegistro@create')->name('registro.create');
     Route::get('/show/{id_registro}', 'ControllerRegistro@show')->name('registro.show');
-    Route::get('/create/', 'ControllerRegistro@create')->name('registro.create');
     Route::get('/arquivo/{id_arquivo}', 'ControllerRegistro@arquivo');
+    Route::get('/delete/{id_registro}', 'ControllerRegistro@delete');
+    Route::get('/delete_arquivo/{id_arquivo}', 'ControllerRegistro@delete_arquivo');
 
-    // ## POST CRUD ##
+    ## POST CRUD ##
     Route::post('/', 'ControllerRegistro@store')->name('registro.store');
-    // Route::post('/update', 'ControllerUsuario@update')->name('registro.update');
-    // Route::post('/find', 'ControllerUsuario@find')->name('registro.find');
+    Route::post('/update', 'ControllerRegistro@update')->name('registro.update');
+    Route::post('/find', 'ControllerRegistro@find')->name('registro.find');
     
     // ## GET GERAL ##
     // Route::get('/exportar/', 'ControllerUsuario@exportar')->name('registro.exportar');
@@ -62,14 +63,6 @@ route::group(["prefix" => "registro"], function() {
     Route::get('/autocomplete_uf/', 'ControllerRegistro@autocomplete_uf');
     Route::get('/autocomplete_cidade/', 'ControllerRegistro@autocomplete_cidade');
     Route::get('/autocomplete_religiao/', 'ControllerRegistro@autocomplete_religiao');
-    // Route::get('/list_tipo_registro/', 'ControllerRegistro@list_tipo_registro');
-    // Route::get('/list_tipo_local_registro/', 'ControllerRegistro@list_tipo_local_registro');
-    // Route::get('/list_declarante/', 'ControllerRegistro@list_declarante');
-    // Route::get('/list_religiao/', 'ControllerRegistro@list_religiao');
-    // Route::get('/list_estado_civil/', 'ControllerRegistro@list_estado_civil');
-    // Route::get('/list_nacionalidade_sobrenome/', 'ControllerRegistro@list_nacionalidade_sobrenome');
-    // ## GET INTEGRACAO ##
-    // Route::get('/autocomplete_grupo_usuario/', 'ControllerUsuario@autocomplete_grupo_usuario');
 
     });
 
