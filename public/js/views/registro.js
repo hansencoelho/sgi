@@ -250,7 +250,7 @@ function create_registro() {
   clearforms($("#formulario"));
 
   $.ajax({
-    url: '/registro/create/',
+    url: '/registro/create',
     type: 'get',
     dataType: 'JSON',
     beforeSend: function () {
@@ -579,7 +579,7 @@ function save_registro() {
 
     $.ajax({
         headers: { 'X-CSRF-TOKEN': _token },
-        url: '/registro/',
+        url: '/registro',
         method: 'POST',
         type: 'POST',
         data: formData,

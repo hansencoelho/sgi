@@ -300,10 +300,10 @@ class ControllerRegistro extends Controller
 
     public function store(Request $request)
     {
-        // dd ($request->multiplos_arquivos);
+        dd ($request->id);
+
         if( Gate::denies('registro-create')) {
 
-            return 0;
             abort(403, 'Não autorizado. Você não tem permissão de editar.');
     
         } else {

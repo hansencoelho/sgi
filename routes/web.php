@@ -52,7 +52,7 @@ route::group(["prefix" => "registro"], function() {
     Route::get('/delete_arquivo/{id_arquivo}', 'ControllerRegistro@delete_arquivo');
 
     ## POST CRUD ##
-    Route::post('/', 'ControllerRegistro@store')->name('registro.store');
+    Route::post('', 'ControllerRegistro@store')->name('registro.store');
     Route::post('/update', 'ControllerRegistro@update')->name('registro.update');
     Route::post('/find', 'ControllerRegistro@find')->name('registro.find');
     
