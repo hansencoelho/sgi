@@ -202,8 +202,8 @@
             <select id="declarante" name="declarante" class="form-select form-select-sm" required>
             </select>
           </div>
-          <div class="col-sm-2">
-            <label for="avos_registrados" class="form-label">Possui Avó Registrados:</label>
+          <div id="div_avos_registrados" class="col-sm-2">
+            <label for="avos_registrados" class="form-label">Possui Avós Registrados:</label>
             <select id="avos_registrados" name="avos_registrados" class="form-select form-select-sm" required>
               <option selected>Não</option>
               <option>Sim</option>

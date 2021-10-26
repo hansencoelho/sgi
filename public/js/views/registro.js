@@ -13,17 +13,21 @@ $(function() {
         $('#div_nome_conjuge').hide();
         $('#div_sobrenome_conjuge').hide();
         
+        
         $('#estado_civil').removeAttr('required');
         $('#religiao').removeAttr('required');
         $('#nome_conjuge').removeAttr('required');
         $('#sobrenome_conjuge').removeAttr('required');
+        
 
         $('#div_declarante').show();
         $('#div_religiao').show();
+        $('#div_avos_registrados').show();
 
         $('#declarante').attr("required", "req");
         $('#religiao').attr("required", "req");
         $('#id_religiao').attr("required", "req");
+        $('#avos_registrados').attr("required", "req");
       break;
 
       case 2:
@@ -58,6 +62,10 @@ $(function() {
         $('#id_religiao').attr("required", "req");
         $('#religiao').attr("required", "req");
         $('#declarante').attr("required", "req");
+
+        $('#div_avos_registrados').hide();
+
+        $('#avos_registrados').removeAttr('required');
       break;
     
     }
@@ -806,14 +814,6 @@ function delete_arquivo(id_arquivo) {
         if (response === 1) {
 
           $("#arquivo_" + id_arquivo).remove();
-          
-          // $("#arquivo_" + id_arquivo).closest('tr').remove();
-
-          // var contador = $('#contador_resultado').html();
-          // var contador = contador.split("").filter(n => (Number(n) || n == 0)).join("");
-          // var contador = (parseInt(contador) - 1);
-
-          // $('#contador_resultado').html("Resultado(s): " + contador);
 
           alert("Arquivo excluído com sucesso!");
       

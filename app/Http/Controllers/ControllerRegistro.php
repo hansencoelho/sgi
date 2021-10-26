@@ -300,19 +300,14 @@ class ControllerRegistro extends Controller
 
     public function store(Request $request)
     {
-        dd ($request->id);
+
+        // dd($request);
 
         if( Gate::denies('registro-create')) {
 
             abort(403, 'Não autorizado. Você não tem permissão de editar.');
     
         } else {
-
-            if ($request->tipo_registro != 1 and 2 and 3) {
-
-                return 0;
-
-            }
 
             $registro = new Registro;
 
@@ -328,7 +323,17 @@ class ControllerRegistro extends Controller
             $registro->sobrenome_pai                   = $request->sobrenome_pai;
             $registro->nome_mae                        = $request->nome_mae;
             $registro->sobrenome_mae                   = $request->sobrenome_mae;
-            $registro->fk_tipo_registro                = $request->tipo_registro;
+
+            if ($request->tipo_registro != 1 or $request->tipo_registro != 2 or $request->tipo_registro != 3) {
+
+                $registro->fk_tipo_registro                = $request->tipo_registro;
+
+            } else {
+
+                $registro->fk_tipo_registro                = 1;
+
+            }
+            
             $registro->fk_tipo_local_registro          = $request->tipo_local_registro;
             $registro->local_registro                  = $request->local_registro;
             $registro->fk_nacionalidade_sobrenome      = $request->nacionalidade_sobrenome;
