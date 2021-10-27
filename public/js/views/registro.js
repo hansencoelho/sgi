@@ -13,13 +13,11 @@ $(function() {
         $('#div_nome_conjuge').hide();
         $('#div_sobrenome_conjuge').hide();
         
-        
         $('#estado_civil').removeAttr('required');
         $('#religiao').removeAttr('required');
         $('#nome_conjuge').removeAttr('required');
         $('#sobrenome_conjuge').removeAttr('required');
         
-
         $('#div_declarante').show();
         $('#div_religiao').show();
         $('#div_avos_registrados').show();
@@ -373,6 +371,7 @@ function show_registro(id_registro) {
 
       // Verifica o tipo de registro e faz o input de informações somente do necessário
       switch (registro.fk_tipo_registro) {
+
         case 1:
           $('#div_estado_civil').hide();
           $('#div_religiao').hide();
@@ -383,12 +382,15 @@ function show_registro(id_registro) {
           $('#religiao').removeAttr('required');
           $('#nome_conjuge').removeAttr('required');
           $('#sobrenome_conjuge').removeAttr('required');
-  
+          
           $('#div_declarante').show();
           $('#div_religiao').show();
+          $('#div_avos_registrados').show();
   
           $('#declarante').attr("required", "req");
-          $('#religiao').attr("required", "req");          
+          $('#religiao').attr("required", "req");
+          $('#id_religiao').attr("required", "req");
+          $('#avos_registrados').attr("required", "req");
         break;
   
         case 2:
@@ -396,20 +398,18 @@ function show_registro(id_registro) {
           $('#div_nome_conjuge').show();
           $('#div_sobrenome_conjuge').show();
           $('#div_religiao').show();
-
+  
           $('#estado_civil').attr("required", "req");
           $('#nome_conjuge').attr("required", "req");
           $('#sobrenome_conjuge').attr("required", "req");
+          $('#id_religiao').attr("required", "req");
           $('#religiao').attr("required", "req");
           
           $('#div_declarante').hide();
           $('#div_declarante_terceiro').hide();
-
+  
           $('#declarante').removeAttr('required');
           $('#declarante_terceiro').removeAttr('required');
-
-          $('#nome_conjuge').val(registro.nome_conjuge);
-          $('#sobrenome_conjuge').val(registro.sobrenome_conjuge);
         break;
   
         case 3:
@@ -418,16 +418,17 @@ function show_registro(id_registro) {
           $('#div_sobrenome_conjuge').show();
           $('#div_religiao').show();
           $('#div_declarante').show();
-          $('#div_religiao').show();
   
           $('#estado_civil').attr("required", "req");
           $('#nome_conjuge').attr("required", "req");
           $('#sobrenome_conjuge').attr("required", "req");
           $('#id_religiao').attr("required", "req");
           $('#religiao').attr("required", "req");
-
-          $('#nome_conjuge').val(registro.nome_conjuge);
-          $('#sobrenome_conjuge').val(registro.sobrenome_conjuge);
+          $('#declarante').attr("required", "req");
+  
+          $('#div_avos_registrados').hide();
+  
+          $('#avos_registrados').removeAttr('required');
         break;
       
       }

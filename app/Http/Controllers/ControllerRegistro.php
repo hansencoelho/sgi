@@ -323,17 +323,6 @@ class ControllerRegistro extends Controller
             $registro->sobrenome_pai                   = $request->sobrenome_pai;
             $registro->nome_mae                        = $request->nome_mae;
             $registro->sobrenome_mae                   = $request->sobrenome_mae;
-
-            if ($request->tipo_registro != 1 or $request->tipo_registro != 2 or $request->tipo_registro != 3) {
-
-                $registro->fk_tipo_registro                = $request->tipo_registro;
-
-            } else {
-
-                $registro->fk_tipo_registro                = 1;
-
-            }
-            
             $registro->fk_tipo_local_registro          = $request->tipo_local_registro;
             $registro->local_registro                  = $request->local_registro;
             $registro->fk_nacionalidade_sobrenome      = $request->nacionalidade_sobrenome;
@@ -342,23 +331,30 @@ class ControllerRegistro extends Controller
             switch ($request->tipo_registro) {
 
                 case 1:
+                    $registro->fk_tipo_registro                = $request->tipo_registro;
                     $registro->fk_declarante                   = $request->declarante;
                     $registro->declarante_terceiro             = $request->declarante_terceiro;
                     break;
 
                 case 2:
+                    $registro->fk_tipo_registro                = $request->tipo_registro;
                     $registro->fk_estado_civil                 = $request->estado_civil;
                     $registro->nome_conjuge                    = $request->nome_conjuge;
                     $registro->sobrenome_conjunge              = $request->sobrenome_conjunge;
                     break;
 
                 case 3:
+                    $registro->fk_tipo_registro                = $request->tipo_registro;
                     $registro->fk_declarante                   = $request->declarante;
                     $registro->declarante_terceiro             = $request->declarante_terceiro;
                     $registro->fk_estado_civil                 = $request->estado_civil;
                     $registro->nome_conjuge                    = $request->nome_conjuge;
                     $registro->sobrenome_conjunge              = $request->sobrenome_conjunge;
                     break;
+
+                default:
+                    $registro->fk_tipo_registro                = 1;
+                break;
             
                 }
 
@@ -376,6 +372,8 @@ class ControllerRegistro extends Controller
                 $registro->sobrenome_avo_materna           = $request->sobrenome_avo_materna;
 
             }
+
+            dd($registro);
 
             $insert = $registro->save();
 
