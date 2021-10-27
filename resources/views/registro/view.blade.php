@@ -24,9 +24,9 @@
       <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#pesquisar" aria-expanded="false">
       <i class="fa fa-search fa-lg"></i> Pesquisa</button>
       
-      <a href="@if(isset($pesquisa_retorno)) {{ route('usuario.exportar') }}?&opcao={{$pesquisa_retorno['pesquisa_opcao']}}&texto={{$pesquisa_retorno['pesquisa_texto']}}@else{{ route('usuario.exportar') }}?status=1 @endif" target="_blank">
+      <!-- <a href="@if(isset($pesquisa_retorno)) {{ route('usuario.exportar') }}?&opcao={{$pesquisa_retorno['pesquisa_opcao']}}&texto={{$pesquisa_retorno['pesquisa_texto']}}@else{{ route('usuario.exportar') }}?status=1 @endif" target="_blank">
       <button type="button" class="btn btn-sm btn-secondary">
-      <i class="fa fa-download fa-lg"></i> Exportar</button></a>
+      <i class="fa fa-download fa-lg"></i> Exportar</button></a> -->
 
     </div>  
 
