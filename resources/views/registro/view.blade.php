@@ -144,7 +144,7 @@
             <span class="visually-hidden ms-auto">Loading...</span>
           </div>
       <!-- Formulário -->
-      <form id="formulario" class="was-validated">
+      <form id="formulario_registro" class="was-validated">
 
         <!-- Linha 1 - Dados Registro -->
         <div class="row mb-3 g-3">
@@ -285,46 +285,49 @@
           </div>
         </div>
 
-        <!-- Linha 5 - Dados Avós Paternos -->
-        <div class="row mb-3 g-3"> 
-          <div id="div_nome_avo_paterno" class="col-sm-2" style="display: none;">
+        <!-- Linha 5 - Dados Avós Paternos e Maternos -->
+        <div class="row mb-3 g-3" id="div_avos">
+
+          <div id="div_nome_avo_paterno" class="col-sm-2">
             <label for="nome_avo_paterno" class="form-label">Nome Avô Paterno:</label>
             <input type="text" id="nome_avo_paterno" name="nome_avo_paterno" class="form-control form-control-sm">
           </div>
-          <div id="div_sobrenome_avo_paterno" class="col-sm-4" style="display: none;">
+
+          <div id="div_sobrenome_avo_paterno" class="col-sm-4">
             <label for="sobrenome_avo_paterno" class="form-label">Sobrenome Avô Paterno:</label>
             <input type="text" id="sobrenome_avo_paterno" name="sobrenome_avo_paterno" class="form-control form-control-sm">
           </div>
 
-          <div id="div_nome_avo_materno" class="col-sm-2" style="display: none;">
+          <div id="div_nome_avo_materno" class="col-sm-2">
             <label for="nome_avo_materno" class="form-label">Nome Avô Materno:</label>
             <input type="text" id="nome_avo_materno" name="nome_avo_materno" class="form-control form-control-sm">
           </div>
-          <div id="div_sobrenome_avo_materno" class="col-sm-4" style="display: none;">
+
+          <div id="div_sobrenome_avo_materno" class="col-sm-4">
             <label for="sobrenome_avo_materno" class="form-label">Sobrenome Avô Materno:</label>
             <input type="text" id="sobrenome_avo_materno" name="sobrenome_avo_materno" class="form-control form-control-sm">
           </div>
-        </div>
 
-        <!-- Linha 6 - Dados Avós Maternos -->
-        <div class="row mb-3 g-3">
-          <div id="div_nome_avo_paterna" class="col-sm-2" style="display: none;">
+          <div id="div_nome_avo_paterna" class="col-sm-2">
             <label for="nome_avo_paterna" class="form-label">Nome Avó Paterna:</label>
             <input type="text" id="nome_avo_paterna" name="nome_avo_paterna" class="form-control form-control-sm">
           </div>
-          <div id="div_sobrenome_avo_paterna" class="col-sm-4" style="display: none;">
+
+          <div id="div_sobrenome_avo_paterna" class="col-sm-4">
             <label for="sobrenome_avo_paterna" class="form-label">Sobrenome Avó Paterna:</label>
             <input type="text" id="sobrenome_avo_paterna" name="sobrenome_avo_paterna" class="form-control form-control-sm">
           </div>
 
-          <div id="div_nome_avo_materna" class="col-sm-2" style="display: none;">
+          <div id="div_nome_avo_materna" class="col-sm-2">
             <label for="nome_avo_materna" class="form-label">Nome Avó Materna:</label>
             <input type="text" id="nome_avo_materna" name="nome_avo_materna" class="form-control form-control-sm">
           </div>
-          <div id="div_sobrenome_avo_materna" class="col-sm-4" style="display: none;">
+
+          <div id="div_sobrenome_avo_materna" class="col-sm-4">
             <label for="sobrenome_avo_materna" class="form-label">Sobrenome Avó Materna:</label>
             <input type="text" id="sobrenome_avo_materna" name="sobrenome_avo_materna" class="form-control form-control-sm">
           </div>
+
         </div>
 
         <!-- Lista de Arquivos -->

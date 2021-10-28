@@ -113,15 +113,18 @@
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <li>
-                            <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" style="padding-left: 5px; padding-right: 15px">
+                            <a class="dropdown-item" href="#" onclick="document.logout_form.submit();" style="padding-left: 5px; padding-right: 15px">
+                                
+                                <!-- event.preventDefault(); document.getElementById('logout-form').submit(); -->
+
                                 <div class="d-sm-flex flex-row bd-highlight">
                                     <div class="bd-highlight" style="text-align: center; width: 3em">
                                     <i class="fas fa-power-off fa-lg"></i></div>
                                     <div class="flex-grow-1 bd-highlight">Sair</div>
                                 </div>
                             </a>
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                @csrf
+                            <form id="logout_form" name="logout_form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                {{ csrf_field() }}
                             </form>
                         </ul>
                     </li>

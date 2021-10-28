@@ -37,6 +37,11 @@ Auth::routes([
 //     return view('login');
 // });
 
+Route::get('/token', function (Request $request) {
+    $token = $request->session()->token();
+    $token = csrf_token();
+});
+
 ################
 #   Registro   #
 ################

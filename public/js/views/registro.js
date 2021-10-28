@@ -8,6 +8,9 @@ $(function() {
     switch (tipo_registro) {
 
       case 1:
+
+      console.log(obter_campos());
+
         $('#div_estado_civil').hide();
         $('#div_religiao').hide();
         $('#div_nome_conjuge').hide();
@@ -32,7 +35,7 @@ $(function() {
         $('#div_estado_civil').show();
         $('#div_nome_conjuge').show();
         $('#div_sobrenome_conjuge').show();
-        $('#div_religiao').show();
+        
 
         $('#estado_civil').attr("required", "req");
         $('#nome_conjuge').attr("required", "req");
@@ -42,9 +45,12 @@ $(function() {
         
         $('#div_declarante').hide();
         $('#div_declarante_terceiro').hide();
+        $('#div_religiao').hide();
 
         $('#declarante').removeAttr('required');
         $('#declarante_terceiro').removeAttr('required');
+        $('#id_religiao').removeAttr('required');
+        $('#religiao').removeAttr('required');
       break;
 
       case 3:
@@ -53,6 +59,7 @@ $(function() {
         $('#div_sobrenome_conjuge').show();
         $('#div_religiao').show();
         $('#div_declarante').show();
+        $('#div_declarante_terceiro').show();
 
         $('#estado_civil').attr("required", "req");
         $('#nome_conjuge').attr("required", "req");
@@ -60,6 +67,8 @@ $(function() {
         $('#id_religiao').attr("required", "req");
         $('#religiao').attr("required", "req");
         $('#declarante').attr("required", "req");
+        $("#declarante").val("4");
+        $('#declarante_terceiro').attr("required", "req");
 
         $('#div_avos_registrados').hide();
 
@@ -74,8 +83,6 @@ $(function() {
   $('#declarante').on('change', function(){
     
     var declarante =  parseInt($('#declarante').val());
-
-    console.log(declarante);
 
     switch (declarante) {
 
@@ -109,44 +116,63 @@ $(function() {
 
     switch (avos_registrados) {
 
-      case 0:
-        $('#div_nome_avo_materno').hide();
-        $('#div_sobrenome_avo_materno').hide();
-        $('#div_nome_avo_materna').hide();
-        $('#div_sobrenome_avo_materna').hide();
-        $('#div_nome_avo_paterno').hide();
-        $('#div_sobrenome_avo_paterno').hide();
-        $('#div_nome_avo_paterna').hide();
-        $('#div_sobrenome_avo_paterna').hide();
+      case 0:        
 
-        $('#div_nome_avo_materno').removeAttr('required');
-        $('#div_sobrenome_avo_materno').removeAttr('required');
-        $('#div_nome_avo_materna').removeAttr('required');
-        $('#div_sobrenome_avo_materna').removeAttr('required');
-        $('#div_nome_avo_paterno').removeAttr('required');
-        $('#div_sobrenome_avo_paterno').removeAttr('required');
-        $('#div_nome_avo_paterna').removeAttr('required');
-        $('#div_sobrenome_avo_paterna').removeAttr('required');
+        $("#div_avos").hide();
+
+        $("#div_avos").each (function(){
+
+          $(this.childNodes).each (function(){
+
+            $(this.childNodes).each (function(){
+
+              var texto = '';
+              var texto = new String($(this).attr('id'));
+  
+              if (texto.includes('_avo_') == true) {
+
+                $(this).removeAttr('required');
+  
+              }
+
+            });
+          });
+        });
       break;
 
       case 1:
-        $('#div_nome_avo_materno').show();
-        $('#div_sobrenome_avo_materno').show();
-        $('#div_nome_avo_materna').show();
-        $('#div_sobrenome_avo_materna').show();
-        $('#div_nome_avo_paterno').show();
-        $('#div_sobrenome_avo_paterno').show();
-        $('#div_nome_avo_paterna').show();
-        $('#div_sobrenome_avo_paterna').show();
 
-        $('#div_nome_avo_materno').attr("required", "req");
-        $('#div_sobrenome_avo_materno').attr("required", "req");
-        $('#div_nome_avo_materna').attr("required", "req");
-        $('#div_sobrenome_avo_materna').attr("required", "req");
-        $('#div_nome_avo_paterno').attr("required", "req");
-        $('#div_sobrenome_avo_paterno').attr("required", "req");
-        $('#div_nome_avo_paterna').attr("required", "req");
-        $('#div_sobrenome_avo_paterna').attr("required", "req");
+        $("#div_avos").show();
+
+        // console.log($('#div_avos'));
+
+        $("#div_avos").each (function(){
+
+          $(this.childNodes).each (function(){
+
+            $(this.childNodes).each (function(){
+
+              var texto = '';
+              var texto = new String($(this).attr('id'));
+  
+              if (texto.includes('_avo_') == true) {
+
+                $(this).attr("required", "req");
+  
+              }
+
+            });
+          });
+        });
+
+        // $('#div_nome_avo_materno').attr("required", "req");
+        // $('#div_sobrenome_avo_materno').attr("required", "req");
+        // $('#div_nome_avo_materna').attr("required", "req");
+        // $('#div_sobrenome_avo_materna').attr("required", "req");
+        // $('#div_nome_avo_paterno').attr("required", "req");
+        // $('#div_sobrenome_avo_paterno').attr("required", "req");
+        // $('#div_nome_avo_paterna').attr("required", "req");
+        // $('#div_sobrenome_avo_paterna').attr("required", "req");
       break;
 
     }
@@ -253,7 +279,7 @@ $(function() {
 // Apresenta um formulário em branco para novo registro, e lista os Dados Auxiliares do Registro nos Campos do Formulário
 function create_registro() {
 
-  clearforms($("#formulario"));
+  clear_form();
 
   $.ajax({
     url: '/registro/create',
@@ -327,7 +353,7 @@ function create_registro() {
 // Carrga registro nos campos do formulário
 function show_registro(id_registro) {
 
-  clearforms($("#formulario"));
+  clear_form();
 
   $.ajax({
     url: '/registro/show/'+id_registro,
@@ -366,7 +392,8 @@ function show_registro(id_registro) {
       $('#religiao').val(registro.ds_religiao);
       $('#nome').val(registro.nome);
       $('#sobrenome').val(registro.sobrenome);
-
+      $('#nome_conjuge').val(registro.nome_conjuge);
+      $('#sobrenome_conjuge').val(registro.sobrenome_conjuge);
       $('#cidade').attr('disabled', true);
 
       // Verifica o tipo de registro e faz o input de informações somente do necessário
@@ -460,14 +487,7 @@ function show_registro(id_registro) {
       switch (parseInt(registro.avos_registrados)) {
 
         case 0:
-          $('#div_nome_avo_materno').hide();
-          $('#div_sobrenome_avo_materno').hide();
-          $('#div_nome_avo_materna').hide();
-          $('#div_sobrenome_avo_materna').hide();
-          $('#div_nome_avo_paterno').hide();
-          $('#div_sobrenome_avo_paterno').hide();
-          $('#div_nome_avo_paterna').hide();
-          $('#div_sobrenome_avo_paterna').hide();
+          $('#div_avos').hide();
   
           $('#nome_avo_materno').removeAttr('required');
           $('#sobrenome_avo_materno').removeAttr('required');
@@ -584,7 +604,7 @@ function save_registro() {
 
     var _token = $('meta[name="_token"]').attr('content');
 
-    const formData = new FormData(formulario);
+    const formData = new FormData(formulario_registro);
 
     $.ajax({
         headers: { 'X-CSRF-TOKEN': _token },
@@ -614,11 +634,7 @@ function save_registro() {
 
 }
 
-function clearforms(form)
-{
-    $(':input', ':hidden', ':select').not(':button, :submit, :reset, :checkbox, :radio').val('');
-    $(':checkbox, :radio').prop('checked', false);
-}
+
 
 function uploadProgressHandler(event) {
 
@@ -716,7 +732,7 @@ function change_registro() {
 
     var _token = $('meta[name="_token"]').attr('content');
 
-    const formData = new FormData(formulario);
+    const formData = new FormData(formulario_registro);
 
     $.ajax({
         headers: { 'X-CSRF-TOKEN': _token },
@@ -829,5 +845,60 @@ function delete_arquivo(id_arquivo) {
     })
 
   }
+
+}
+
+function clear_form()
+{
+
+    $("#formulario_registro").each (function(){
+      this.reset();
+    });
+
+}
+
+function alterar_campos(){
+
+
+
+}
+
+function obter_campos(){
+
+
+  campos = ['nascimento','casamento','obito'];
+
+  $(campos).each (function() {
+
+    campos[this] = ['div_hide','not_required','div_show','required'];
+
+  });
+
+
+  // $(campos['nascimento']).each (function() {
+
+  //   this  = ['div_hide','not_required','div_show','required'];
+
+  // });
+
+  campos['nascimento']['div_hide'] = [ '#div_estado_civil', '#div_nome_conjuge' , '#div_sobrenome_conjuge'];
+  campos['nascimento']['not_required'] = [ '#estado_civil', '#nome_conjuge' , '#sobrenome_conjuge' ] ;
+  campos['nascimento']['div_show'] = [ '#div_declarante', '#div_religiao', '#div_avos_registrados' ] ;
+  campos['nascimento']['required'] = [ '#declarante', '#id_religiao' , '#religiao', '#avos_registrados' ] ;
+
+
+
+  console.log(campos);
+
+  // var campos['1'] = array('div_deabilitadar') ; 
+
+  // var campos = new Object();
+
+  // campos.nascimento.div_desabilitar = [ '#div_estado_civil', '#div_nome_conjuge' , '#div_sobrenome_conjuge'] ;
+  // campos.nascimento.nao_requerido = [ '#estado_civil', '#nome_conjuge' , '#sobrenome_conjuge' ] ;
+  // campos.nascimento.div_habilitar = [ '#div_declarante', '#div_religiao', '#div_avos_registrados' ] ;
+  // campos.nascimento.requerido = [ '#declarante', '#id_religiao' , '#religiao', '#avos_registrados' ] ;
+
+  // return campos;
 
 }

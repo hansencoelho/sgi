@@ -373,7 +373,7 @@ class ControllerRegistro extends Controller
 
             }
 
-            dd($registro);
+            // dd($registro);
 
             $insert = $registro->save();
 
@@ -413,6 +413,8 @@ class ControllerRegistro extends Controller
                 $dados->arquivos = 0;
 
             }
+
+            $dados->token = csrf_token();
             
             return response()->json($dados);
 
