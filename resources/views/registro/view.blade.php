@@ -11,8 +11,6 @@
   <hr>
 </div>
 
-<!-- <script> var api_username = "{{ env('API_USERNAME') }}"; var api_password = "{{ env('API_USERNAME') }}" </script> -->
-
 {{-- Opções --}}
 <div class="col-md-12">
   <div class="row row-cols-2">
@@ -286,7 +284,7 @@
         </div>
 
         <!-- Linha 5 - Dados Avós Paternos e Maternos -->
-        <div class="row mb-3 g-3" id="div_avos">
+        <div class="row mb-3 g-3" id="div_avos" style="display: none;">
 
           <div id="div_nome_avo_paterno" class="col-sm-2">
             <label for="nome_avo_paterno" class="form-label">Nome Avô Paterno:</label>

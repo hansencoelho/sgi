@@ -373,8 +373,6 @@ class ControllerRegistro extends Controller
 
             }
 
-            // dd($registro);
-
             $insert = $registro->save();
 
             if ($request->multiplos_arquivos != "") {
@@ -534,7 +532,6 @@ class ControllerRegistro extends Controller
 
     public function update(Request $request)
     {
-
         if(Gate::denies('registro-edit')) {
 
             abort(403, 'Não autorizado. Você não tem permissão de editar.');
@@ -566,7 +563,7 @@ class ControllerRegistro extends Controller
                 'declarante_terceiro'             => $request->declarante_terceiro,
                 'fk_estado_civil'                 => $request->estado_civil,
                 'nome_conjuge'                    => $request->nome_conjuge,
-                'sobrenome_conjunge'              => $request->sobrenome_conjunge,
+                'sobrenome_conjuge'               => $request->sobrenome_conjuge,
                 'nome_avo_paterno'                => $request->nome_avo_paterno,
                 'sobrenome_avo_paterno'           => $request->sobrenome_avo_paterno,
                 'nome_avo_paterna'                => $request->nome_avo_paterna,
