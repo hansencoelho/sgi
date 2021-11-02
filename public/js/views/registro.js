@@ -13,13 +13,36 @@ $(function() {
 
       case 2:
         alterar_tipo_registro(tipo_registro);
+        alterar_estado_civil(1);
+        $("#estado_civil").val("2");
       break;
 
       case 3:
         alterar_tipo_registro(tipo_registro);
         $("#declarante").val("4");
       break;
+    }
     
+  });
+
+  /* Habilita / Desabilita Campos com Base na Escolha */
+  $('#estado_civil').on('change', function(){
+
+    var estado_civil =  parseInt($('#estado_civil').val());
+
+    switch (estado_civil) {
+
+      case 1:
+        alterar_estado_civil(0);
+      break;
+
+      case 2:
+        alterar_estado_civil(1);
+      break;
+
+      case 3:
+        alterar_estado_civil(1);
+      break;
     }
     
   });
@@ -233,7 +256,55 @@ function create_registro() {
 
 }
 
-// Carrga registro nos campos do formulário
+function exportar(){
+
+  var formulario = $('#formulario_pesquisa');
+  var _token = $('meta[name="_token"]').attr('content');
+
+    $.ajax({
+      headers: { 'X-CSRF-TOKEN': _token },
+      xhrFields: {
+        responseType: 'blob',
+      },
+      
+      // dataType:'blob',
+      url: '/registro/exportar',
+      method: 'POST',
+      type: 'POST',
+      cache: false,
+      // contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+      data: {
+
+        pesquisa_tipo_registro : $(formulario[0][1]).val(),
+        pesquisa_tipo_local_registro : $(formulario[0][2]).val(),
+        pesquisa_opcao : $(formulario[0][3]).val(),
+        pesquisa_texto : $(formulario[0][4]).val(),
+
+      },
+
+      success: function(result, status, xhr) {
+
+        var disposition = xhr.getResponseHeader('content-disposition');
+        var matches = /"([^"]*)"/.exec(disposition);
+        var filename = (matches != null && matches[1] ? matches[1] : 'registros.xlsx');
+
+        // The actual download
+        var blob = new Blob([result], {
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        });
+        var link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = filename;
+
+        document.body.appendChild(link);
+
+        link.click();
+        document.body.removeChild(link);
+      }
+    });
+}
+
+// Carrega registro nos campos do formulário
 function show_registro(id_registro) {
 
   clear_form();
@@ -449,6 +520,8 @@ function loadHandler(event) {
 
   var retorno = JSON.parse(event.currentTarget.status);
 
+  console.log(retorno);
+
   if (retorno == 403) {
 
   alert("Você não possui permissão para essa ação!");
@@ -459,13 +532,14 @@ function loadHandler(event) {
 
     if (retorno.arquivos.length == 0) {
 
-      $("#id_registro").val(retorno.id_registro);
+      $("#id").val(retorno.id_registro);
       $("#div_lista_arquivos").hide();
 
     } else {
 
-      $("#id_registro").val(retorno.id_registro);
+      $("#id").val(retorno.id_registro);
       $("#div_lista_arquivos").show();
+      $("#lista_arquivos").attr('class', "collapse show");
       $("#card_arquivos").empty();
 
       $.each(retorno.arquivos, function(index, arquivo) {
@@ -482,8 +556,9 @@ function loadHandler(event) {
     $('#label_barra_progresso').html("Carregamento concluído");
 
     $('#div_barra_progresso').hide();
+    $('#button_modal').attr('onclick','change_registro();');
 
-    alert("Registro atualizado com sucesso!");
+    alert(retorno.resposta_mensagem);
 
     }
 
@@ -552,12 +627,20 @@ function change_registro() {
 function delete_registro(id_registro) {
 
   var resposta = confirm("Deseja remover esse registro?");
+  var _token = $('meta[name="_token"]').attr('content');
 
   if (resposta == true) {
 
     $.ajax({
-      url: '/registro/delete/'+id_registro,
-      type: 'get',
+      headers: { 'X-CSRF-TOKEN': _token },
+      url: '/registro/delete',
+      method: 'POST',
+      type: 'POST',
+      data: {
+
+        id_registro: id_registro,
+
+      },
       dataType: 'JSON',
       beforeSend: function () {
         
@@ -598,14 +681,22 @@ function delete_registro(id_registro) {
 function delete_arquivo(id_arquivo) {
 
   var resposta = confirm("Deseja remover esse arquivo?");
+  var _token = $('meta[name="_token"]').attr('content');
 
   if (resposta == true) {
 
     $.ajax({
-      url: '/registro/delete_arquivo/'+id_arquivo,
-      type: 'get',
+      headers: { 'X-CSRF-TOKEN': _token },
+      url: '/registro/delete_arquivo',
+      method: 'POST',
+      type: 'POST',
+      data: {
+
+        id_arquivo: id_arquivo,
+        id_registro: $("#id").val(),
+
+      },
       dataType: 'JSON',
-      data: { id_registro: $("#id").val() },
       beforeSend: function () {
         
         $('#div_carregamento').show();
@@ -694,6 +785,22 @@ function alterar_avos(id){
     campos.avos[1].div_show.forEach(function(input){
       $(input).show();
     });
+  }
+
+}
+
+function alterar_estado_civil(id){
+
+  if (id == 0) {
+    $('#div_conjuge').hide();
+    $('#nome_conjuge').removeAttr('required');
+    $('#sobrenome_conjuge').removeAttr('required');
+  }
+
+  if (id == 1) {
+    $('#div_conjuge').show();
+    $('#nome_conjuge').attr("required", "req");
+    $('#sobrenome_conjuge').attr("required", "req");
   }
 
 }

@@ -22,9 +22,8 @@
       <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#pesquisar" aria-expanded="false">
       <i class="fa fa-search fa-lg"></i> Pesquisa</button>
       
-      <!-- <a href="@if(isset($pesquisa_retorno)) {{ route('usuario.exportar') }}?&opcao={{$pesquisa_retorno['pesquisa_opcao']}}&texto={{$pesquisa_retorno['pesquisa_texto']}}@else{{ route('usuario.exportar') }}?status=1 @endif" target="_blank">
-      <button type="button" class="btn btn-sm btn-secondary">
-      <i class="fa fa-download fa-lg"></i> Exportar</button></a> -->
+      <button onclick="exportar();" target="_blank" type="button" class="btn btn-sm btn-secondary">
+      <i class="fa fa-download fa-lg"></i> Exportar para Excel</button>
 
     </div>  
 
@@ -38,7 +37,7 @@
 
 <div class="@if(isset($pesquisa_retorno)){{'collapse show'}}@else{{'collapse'}}@endif" id="pesquisar">
     <div class="card card-body">
-        <form class="row g-12" method="POST" action="{{ route('registro.find') }}">
+        <form id="formulario_pesquisa" class="row g-12" method="POST" action="{{ route('registro.find') }}">
         {{ csrf_field() }}
         
             <div class="col-sm-2">
@@ -234,7 +233,7 @@
               <option>Italiano</option>
             </select>
           </div>
-          <div id="div_estado_civil" class="col-sm-2">
+          <div id="div_estado_civil" class="col-sm-2" style="display: none;">
             <label id="label_estado_civil" for="estado_civil" class="form-label">Estado Civil:</label>
             <select id="estado_civil" name="estado_civil" class="form-select form-select-sm" required>
               <option selected>Solteiro(a)</option>
@@ -250,7 +249,7 @@
 
         
         <!-- Linha 4 - Dados Conjuge -->
-        <div class="row mb-3 g-3">
+        <div id="div_conjuge" class="row mb-3 g-3" style="display: none;">
           <div id="div_nome_conjuge" class="col-sm-2">
             <label for="nome_conjuge" class="form-label">Nome Conjuge:</label>
             <input type="text" id="nome_conjuge" name="nome_conjuge" class="form-control form-control-sm" required>

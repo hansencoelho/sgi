@@ -16,11 +16,15 @@ use App\Models\Cidade;
 use App\Models\Religiao;
 use App\Models\NacionalidadeSobrenome;
 use App\Models\CaminhoArquivo;
+use App\Exports\RegistroExport;
 use Illuminate\Support\Facades\Storage;
 use File;
 use Auth;
 use Response;
 use Filesystem;
+use Maatwebsite\Excel\Excel;
+use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\Exportable;
 
 class ControllerRegistro extends Controller
 {
@@ -144,10 +148,6 @@ class ControllerRegistro extends Controller
             ->where( $pesquisa_opcao ,'LIKE','%'.$request->pesquisa_texto.'%')
             ->where('registro.fk_tipo_registro', 'LIKE', $request->pesquisa_tipo_registro)
             ->where('registro.fk_tipo_local_registro', 'LIKE', $request->pesquisa_tipo_local_registro)
-            // ->where('u.FK_NRSC', 'LIKE', $request->pesquisa_regional)
-            // ->where('l.FK_FORNECEDOR', 'LIKE', $request->pesquisa_fornecedor)
-            // ->where('linha_movel.FK_STATUS_LINHA_MOVEL', 'LIKE', $pesquisa_status)
-            // ->where('us.id' , '=', $id_usuario)
 
             ->orderBy('nome', 'ASC')
             ->get();
@@ -180,97 +180,80 @@ class ControllerRegistro extends Controller
 
     public function exportar(Request $request)
     {
-        if( Gate::denies('usuario-view')) {
+
+        if( Gate::denies('registro-view')) {
 
             abort(403, 'Não autorizado');
     
             } else {
 
-            $pesquisa_opcao = $request->pesquisa_opcao;
-            $texto          = $request->pesquisa_texto;
 
-            switch ($pesquisa_opcao) {
-            case 1:
-                $pesquisa_opcao = 'users.name';
-                break;
-            case 2:
-                $pesquisa_opcao = 'email'; 
-                break;
-            case 3:
-                $pesquisa_opcao = 'username'; 
-                break;
+            $pesquisa = array();  
+            $pesquisa = (object) $pesquisa;
 
-            default:
-                $pesquisa_opcao = 'name'; 
-                break;
-        
-            }
-        
-            $usuario = User::select(
-        
-                'id                 AS ID_USUARIO',
-                'name               AS NOME',
-                'email              AS EMAIL',
-                'username           AS USERNAME',
-                'departamento       AS AREA',
-                'gu.DESCRICAO       AS GRUPO_USUARIO',
-                'FK_GRUPO_USUARIO   AS ID_GRUPO_USUARIO',    
-                )
-                ->leftjoin('acl_grupo_usuario AS gu', 'users.FK_GRUPO_USUARIO', '=', 'gu.ID_ACL_GRUPO_USUARIO')
+            $pesquisa->pesquisa_tipo_registro           = $request->pesquisa_tipo_registro;
+            $pesquisa->pesquisa_tipo_local_registro     = $request->pesquisa_tipo_local_registro;
+            $pesquisa->pesquisa_opcao                   = $request->pesquisa_opcao;
+            $pesquisa->pesquisa_texto                   = $request->pesquisa_texto;
 
-                ->where($pesquisa_opcao, 'LIKE','%'.$texto.'%')
-                ->orderby('name', 'ASC')
-                ->get();
-
-            $arquivo = 'Usuários.xls';
-
-                // Criar uma tabela HTML com o formato da planilha
-                $html = '<meta charset="UTF-8">';
-                $html .= '<table class="table table-sm table-hover" border="1">';
-                    $html .= '<div>';
-                        $html .= '<thead>';
-                            $html .= '<tr>';
-                                $html .= '<th scope="col">ID</th>';
-                                $html .= '<th scope="col">NOME</th>';
-                                $html .= '<th scope="col">EMAIL</th>';
-                                $html .= '<th scope="col">USUÁRIO</th>';
-                                $html .= '<th scope="col">ÁREA</th>';
-                                $html .= '<th scope="col">GRUPO DO USUÁRIO</th>';
-                            $html .= '</tr>';
-                        $html .= '</thead>';
-
-                        $html .= '<tbody>';
-
-                        foreach($usuario as $tb_usuario){
-
-                            $html .= '<tr>';
-                                $html .= '<td>'.$tb_usuario->ID_USUARIO.'</td>';
-                                $html .= '<td>'.$tb_usuario->NOME.'</td>';
-                                $html .= '<td>'.$tb_usuario->EMAIL.'</td>';
-                                $html .= '<td>'.$tb_usuario->USERNAME.'</td>';
-                                $html .= '<td>'.$tb_usuario->AREA.'</td>';
-                                $html .= '<td>'.$tb_usuario->GRUPO_USUARIO.'</td>';
-                            $html .= '</tr>';
-                        }
-
-                        $html .= '</tbody>';
-                    $html .= '</table>';
-        
-                    # Configurações header para download
-                    header ("Expires: 0");
-                    header ("Last-Modified: " . gmdate("D,d M YH:i:s") . " GMT");
-                    header ("Cache-Control: no-cache, must-revalidate");
-                    header ("Pragma: no-cache");
-                    header ("Content-type: application/x-msexcel");
-                    header ("Content-Disposition: attachment; filename=\"{$arquivo}\"" );
-                    header ("Content-Description: PHP Generated Data" );
-
-                    echo $html;
-
-                    exit;
+            return (new RegistroExport($pesquisa))->download('registros.xlsx', \Maatwebsite\Excel\Excel::XLSX);
 
         }
     }
+
+    public function obtem_dados_exportacao($pesquisa){
+
+        switch ($pesquisa->pesquisa_opcao) {
+            case 1:
+                $pesquisa->pesquisa_opcao = 'registro.nome';
+                break;
+            case 2:
+                $pesquisa->pesquisa_opcao = 'registro.sobrenome'; 
+                break;
+            case 3:
+                $pesquisa->pesquisa_opcao = 'registro.local_registro'; 
+                break;
+
+            default:
+            $pesquisa->pesquisa_opcao = 'registro.nome'; 
+                break;
+        
+        }
+
+        $dados = array();  
+        $dados = (object) $dados;
+
+        $dados->registro = Registro::select(
+
+            'registro.*',
+            'tr.descricao       AS TIPO_REGISTRO',
+            'tlr.descricao      AS TIPO_LOCAL_REGISTRO',
+            'uf.sigla           AS UF',
+            'ci.descricao       AS CIDADE',
+            'de.descricao       AS DECLARANTE',
+            'ns.descricao       AS NACIONALIADE',
+            'cv.descricao       AS ESTADO_CIVIL',
+            'rl.descricao       AS RELIGIAO',
+    
+            )
+            ->leftjoin('tipo_registro AS tr', 'registro.fk_tipo_registro', '=', 'tr.id')
+            ->leftjoin('tipo_local_registro AS tlr', 'registro.fk_tipo_local_registro', '=', 'tlr.id')
+            ->leftjoin('cidade AS ci', 'registro.fk_cidade', '=', 'ci.id')
+            ->leftjoin('uf', 'ci.fk_uf', '=', 'uf.id')
+            ->leftjoin('declarante AS de', 'registro.fk_declarante', '=', 'de.id')
+            ->leftjoin('nacionalidade_sobrenome AS ns', 'registro.fk_nacionalidade_sobrenome', '=', 'ns.id')
+            ->leftjoin('estado_civil AS cv', 'registro.fk_estado_civil', '=', 'cv.id')
+            ->leftjoin('religiao AS rl', 'registro.fk_religiao', '=', 'rl.id')
+            ->where( $pesquisa->pesquisa_opcao ,'LIKE','%'.$pesquisa->pesquisa_texto.'%')
+            ->where('registro.fk_tipo_registro', 'LIKE', $pesquisa->pesquisa_tipo_registro)
+            ->where('registro.fk_tipo_local_registro', 'LIKE', $pesquisa->pesquisa_tipo_local_registro)
+            ->get();
+
+            return $dados->registro;
+
+    }
+
+
 
     public function create()
     {
@@ -340,7 +323,7 @@ class ControllerRegistro extends Controller
                     $registro->fk_tipo_registro                = $request->tipo_registro;
                     $registro->fk_estado_civil                 = $request->estado_civil;
                     $registro->nome_conjuge                    = $request->nome_conjuge;
-                    $registro->sobrenome_conjunge              = $request->sobrenome_conjunge;
+                    $registro->sobrenome_conjuge              = $request->sobrenome_conjuge;
                     break;
 
                 case 3:
@@ -349,7 +332,7 @@ class ControllerRegistro extends Controller
                     $registro->declarante_terceiro             = $request->declarante_terceiro;
                     $registro->fk_estado_civil                 = $request->estado_civil;
                     $registro->nome_conjuge                    = $request->nome_conjuge;
-                    $registro->sobrenome_conjunge              = $request->sobrenome_conjunge;
+                    $registro->sobrenome_conjuge              = $request->sobrenome_conjuge;
                     break;
 
                 default:
@@ -412,7 +395,7 @@ class ControllerRegistro extends Controller
 
             }
 
-            $dados->token = csrf_token();
+            $dados->resposta_mensagem = "Registro salvo com sucesso!";
             
             return response()->json($dados);
 
@@ -538,8 +521,6 @@ class ControllerRegistro extends Controller
     
         } else {
 
-            // dd('teste');
-
             $update = Registro::where('id', '=', $request->id)->update([
 
                 'data_registro'                   => $request->data_fato,
@@ -619,7 +600,7 @@ class ControllerRegistro extends Controller
 
                 }
 
-            
+            $dados->resposta_mensagem = "Registro atualizado com sucesso!";
             
             return response()->json($dados);
 
