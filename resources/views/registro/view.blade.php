@@ -4,6 +4,7 @@
 
 <meta name="_token" content="{{ csrf_token() }}">
 
+<script type="text/javascript" language="javascript" src="{{ asset('js/letras_numeros.js') }}"></script>
 <script type="text/javascript" language="javascript" src="{{ asset('js/views/registro.js') }}"></script>
 
 <div class="text-center">
@@ -187,7 +188,7 @@
           <div class="col-sm-1">
             <label for="uf" class="form-label">UF:</label>
             <input type="hidden" id="id_uf" name="id_uf" value="" class="form-control form-control-sm" required>
-            <input type="text" id="uf" name="uf" value="" class="form-control form-control-sm" required>
+            <input type="text" id="uf" name="uf" value="" class="form-control form-control-sm" onkeypress="return letras(event);"  required>
           </div>
           <div class="col-md-3">
             <label for="cidade" class="form-label">Cidade:</label>
@@ -212,7 +213,7 @@
         <div class="row mb-3 g-3">
           <div id="div_declarante_terceiro" class="col-md-4" style="display: none;">
             <label for="declarante_terceiro" class="form-label">Declarante Terceiro:</label>
-            <input type="text" id="declarante_terceiro" name="declarante_terceiro" class="form-control form-control-sm" required>
+            <input type="text" id="declarante_terceiro" name="declarante_terceiro" class="form-control form-control-sm" onkeypress="return letras(event);" required>
           </div>
         </div>
           
@@ -220,11 +221,11 @@
         <div class="row mb-3 g-3"> 
           <div class="col-sm-2">
             <label for="nome" class="form-label">Nome:</label>
-            <input type="text" id="nome" name="nome" class="form-control form-control-sm" required>
+            <input type="text" id="nome" name="nome" class="form-control form-control-sm" onkeypress="return letras(event);" required>
           </div>
           <div class="col-sm-4">
             <label for="sobrenome" class="form-label">Sobrenome:</label>
-            <input type="text" id="sobrenome" name="sobrenome" class="form-control form-control-sm" required>
+            <input type="text" id="sobrenome" name="sobrenome" class="form-control form-control-sm" onkeypress="return letras(event);" required>
           </div>
           <div id="div_nacionalidade_sobrenome" class="col-sm-2">
             <label for="nacionalidade_sobrenome" class="form-label">Nacionalidade Sobrenome:</label>
@@ -243,7 +244,7 @@
           <div id="div_religiao" class="col-sm-2">
             <label for="religiao" class="form-label">Religião:</label>
             <input type="hidden" id="id_religiao" name="id_religiao" class="form-control form-control-sm">
-            <input type="text" id="religiao" name="religiao" class="form-control form-control-sm">
+            <input type="text" id="religiao" name="religiao" class="form-control form-control-sm" onkeypress="return letras(event);">
           </div>
         </div>
 
@@ -252,11 +253,11 @@
         <div id="div_conjuge" class="row mb-3 g-3" style="display: none;">
           <div id="div_nome_conjuge" class="col-sm-2">
             <label for="nome_conjuge" class="form-label">Nome Conjuge:</label>
-            <input type="text" id="nome_conjuge" name="nome_conjuge" class="form-control form-control-sm" required>
+            <input type="text" id="nome_conjuge" name="nome_conjuge" class="form-control form-control-sm" onkeypress="return letras(event);" required>
           </div>
           <div id="div_sobrenome_conjuge" class="col-sm-4">
             <label for="sobrenome_conjuge" class="form-label">Sobrenome Conjuge:</label>
-            <input type="text" id="sobrenome_conjuge" name="sobrenome_conjuge" class="form-control form-control-sm" required>
+            <input type="text" id="sobrenome_conjuge" name="sobrenome_conjuge" class="form-control form-control-sm" onkeypress="return letras(event);" required>
           </div>
         </div>
 
@@ -266,19 +267,19 @@
         <div class="row mb-3 g-3"> 
           <div id="div_nome_pai" class="col-sm-2">
             <label for="nome_pai" class="form-label">Nome Pai:</label>
-            <input type="text" id="nome_pai" name="nome_pai" class="form-control form-control-sm">
+            <input type="text" id="nome_pai" name="nome_pai" class="form-control form-control-sm" onkeypress="return letras(event);">
           </div>
           <div id="div_sobrenome_pai" class="col-sm-4">
             <label for="sobrenome_pai" class="form-label">Sobrenome Pai:</label>
-            <input type="text" id="sobrenome_pai" name="sobrenome_pai" class="form-control form-control-sm">
+            <input type="text" id="sobrenome_pai" name="sobrenome_pai" class="form-control form-control-sm" onkeypress="return letras(event);">
           </div>
           <div id="div_nome_mae" class="col-sm-2">
             <label for="nome_mae" class="form-label">Nome Mãe:</label>
-            <input type="text" id="nome_mae" name="nome_mae" class="form-control form-control-sm">
+            <input type="text" id="nome_mae" name="nome_mae" class="form-control form-control-sm" onkeypress="return letras(event);">
           </div>
           <div id="div_sobrenome_mae" class="col-sm-4">
             <label for="sobrenome_mae" class="form-label">Sobrenome Mãe:</label>
-            <input type="text" id="sobrenome_mae" name="sobrenome_mae" class="form-control form-control-sm">
+            <input type="text" id="sobrenome_mae" name="sobrenome_mae" class="form-control form-control-sm" onkeypress="return letras(event);">
           </div>
         </div>
 
@@ -287,42 +288,42 @@
 
           <div id="div_nome_avo_paterno" class="col-sm-2">
             <label for="nome_avo_paterno" class="form-label">Nome Avô Paterno:</label>
-            <input type="text" id="nome_avo_paterno" name="nome_avo_paterno" class="form-control form-control-sm">
+            <input type="text" id="nome_avo_paterno" name="nome_avo_paterno" class="form-control form-control-sm" onkeypress="return letras(event);">
           </div>
 
           <div id="div_sobrenome_avo_paterno" class="col-sm-4">
             <label for="sobrenome_avo_paterno" class="form-label">Sobrenome Avô Paterno:</label>
-            <input type="text" id="sobrenome_avo_paterno" name="sobrenome_avo_paterno" class="form-control form-control-sm">
+            <input type="text" id="sobrenome_avo_paterno" name="sobrenome_avo_paterno" class="form-control form-control-sm" onkeypress="return letras(event);">
           </div>
 
           <div id="div_nome_avo_materno" class="col-sm-2">
             <label for="nome_avo_materno" class="form-label">Nome Avô Materno:</label>
-            <input type="text" id="nome_avo_materno" name="nome_avo_materno" class="form-control form-control-sm">
+            <input type="text" id="nome_avo_materno" name="nome_avo_materno" class="form-control form-control-sm" onkeypress="return letras(event);">
           </div>
 
           <div id="div_sobrenome_avo_materno" class="col-sm-4">
             <label for="sobrenome_avo_materno" class="form-label">Sobrenome Avô Materno:</label>
-            <input type="text" id="sobrenome_avo_materno" name="sobrenome_avo_materno" class="form-control form-control-sm">
+            <input type="text" id="sobrenome_avo_materno" name="sobrenome_avo_materno" class="form-control form-control-sm" onkeypress="return letras(event);">
           </div>
 
           <div id="div_nome_avo_paterna" class="col-sm-2">
             <label for="nome_avo_paterna" class="form-label">Nome Avó Paterna:</label>
-            <input type="text" id="nome_avo_paterna" name="nome_avo_paterna" class="form-control form-control-sm">
+            <input type="text" id="nome_avo_paterna" name="nome_avo_paterna" class="form-control form-control-sm" onkeypress="return letras(event);">
           </div>
 
           <div id="div_sobrenome_avo_paterna" class="col-sm-4">
             <label for="sobrenome_avo_paterna" class="form-label">Sobrenome Avó Paterna:</label>
-            <input type="text" id="sobrenome_avo_paterna" name="sobrenome_avo_paterna" class="form-control form-control-sm">
+            <input type="text" id="sobrenome_avo_paterna" name="sobrenome_avo_paterna" class="form-control form-control-sm" onkeypress="return letras(event);">
           </div>
 
           <div id="div_nome_avo_materna" class="col-sm-2">
             <label for="nome_avo_materna" class="form-label">Nome Avó Materna:</label>
-            <input type="text" id="nome_avo_materna" name="nome_avo_materna" class="form-control form-control-sm">
+            <input type="text" id="nome_avo_materna" name="nome_avo_materna" class="form-control form-control-sm" onkeypress="return letras(event);">
           </div>
 
           <div id="div_sobrenome_avo_materna" class="col-sm-4">
             <label for="sobrenome_avo_materna" class="form-label">Sobrenome Avó Materna:</label>
-            <input type="text" id="sobrenome_avo_materna" name="sobrenome_avo_materna" class="form-control form-control-sm">
+            <input type="text" id="sobrenome_avo_materna" name="sobrenome_avo_materna" class="form-control form-control-sm" onkeypress="return letras(event);">
           </div>
 
         </div>
