@@ -7,7 +7,7 @@ use App\Models\AclAcesso;
 use Auth;
 use DB;
 
-class RegistroPolicy
+class UsuarioPolicy
 {
     use HandlesAuthorization;
 

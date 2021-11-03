@@ -853,11 +853,3 @@ function obter_campos(){
   return campos;
 
 }
-
-
-function teste_botao() {
-
-console.log($('#div_alert'));
-$('#div_alert').show();
-
-}

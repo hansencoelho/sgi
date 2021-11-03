@@ -7,7 +7,7 @@ use App\Models\AclAcesso;
 use Auth;
 use DB;
 
-class RegistroPolicy
+class AcessoPolicy
 {
     use HandlesAuthorization;
 
@@ -42,7 +42,7 @@ class RegistroPolicy
     public function consulta_permissao(){
 
         $id_usuario = Auth::user()->id;
-        $modulo = 2;
+        $modulo = 1;
 
         $acl_acesso = AclAcesso::select(
             'acl_acesso.fk_acl_permissao AS PERMISSAO'

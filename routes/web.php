@@ -19,13 +19,19 @@ Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('ho
 //     return view('auth.login');
 // });
 
+// Route::get('/register', function () {
+//     return view('auth.register');
+// });
+
 ### AUTENTICAÇÃO ###
 
-Auth::routes([
-    'reset' => false,
-    'verify' => false,
-    'register' => true,
-]);
+Auth::routes();
+
+// Auth::routes([
+//     'reset' => false,
+//     'verify' => false,
+//     'register' => true,
+// ]);
 
 // Route::get('/home', function () {
 //     return view('dashboard.home');
@@ -57,7 +63,7 @@ route::group(["prefix" => "registro"], function() {
     Route::post('/delete_arquivo', 'ControllerRegistro@delete_arquivo');
     Route::post('/exportar', 'ControllerRegistro@exportar');
 
-    ## GET LISTAS ##
+    ## GET AUTOCOMPLETE ##
     Route::get('/autocomplete_uf/', 'ControllerRegistro@autocomplete_uf');
     Route::get('/autocomplete_cidade/', 'ControllerRegistro@autocomplete_cidade');
     Route::get('/autocomplete_religiao/', 'ControllerRegistro@autocomplete_religiao');
@@ -73,7 +79,7 @@ route::group(["prefix" => "usuario"], function() {
     ## GET CRUD ##
     Route::get('', 'ControllerUsuario@index')->name('usuario');
     Route::get('/create', 'ControllerUsuario@create')->name('usuario.create');
-    Route::get('/show/{id_usuario}', 'ControllerUsuario@show')->name('usuario.show');
+    Route::get('/show/{id_usuario}', 'ControllerUsuario@show');
 
     ## POST CRUD ##
     Route::post('/', 'ControllerUsuario@store')->name('usuario.store');
@@ -82,8 +88,8 @@ route::group(["prefix" => "usuario"], function() {
     
     ## GET GERAL ##
     Route::get('/exportar/', 'ControllerUsuario@exportar')->name('usuario.exportar');
-
-    ## GET INTEGRACAO ##
-    Route::get('/autocomplete_grupo_usuario/', 'ControllerUsuario@autocomplete_grupo_usuario');
+    
+    ## GET AUTOCOMPLETE ##
+    Route::get('/autocomplete_funcao/', 'ControllerUsuario@autocomplete_funcao');
 
     });
