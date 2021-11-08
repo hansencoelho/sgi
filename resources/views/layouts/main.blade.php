@@ -60,13 +60,13 @@
                                     </div>
                                 </a>
 
-                                <a class="dropdown-item" href="{{ route('register') }}" style="padding-left: 5px; padding-right: 15px">
+                                <!-- <a class="dropdown-item" href="" style="padding-left: 5px; padding-right: 15px">
                                     <div class="d-sm-flex flex-row bd-highlight">
                                         <div class="bd-highlight" style="text-align: center; width: 3em">
                                         <i class="fas fa-user fa-lg"></i></div>
                                         <div class="flex-grow-1 bd-highlight">Cadastro Usuário</div>
                                     </div>  
-                                </a>
+                                </a> -->
                             </li>
                         </ul>
 

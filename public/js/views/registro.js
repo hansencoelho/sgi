@@ -520,8 +520,6 @@ function loadHandler(event) {
 
   var retorno = JSON.parse(event.currentTarget.status);
 
-  console.log(retorno);
-
   if (retorno == 403) {
 
   alert("Você não possui permissão para essa ação!");

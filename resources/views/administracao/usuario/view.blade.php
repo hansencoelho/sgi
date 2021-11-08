@@ -20,10 +20,6 @@
 
       <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#pesquisar" aria-expanded="false">
       <i class="fa fa-search fa-lg"></i> Pesquisar</button>
-      
-      <!-- <a href="@if(isset($pesquisa_retorno)) {{ route('usuario.exportar') }}?&opcao={{$pesquisa_retorno['pesquisa_opcao']}}&texto={{$pesquisa_retorno['pesquisa_texto']}}@else{{ route('usuario.exportar') }}?status=1 @endif" target="_blank">
-      <button type="button" class="btn btn-sm btn-secondary">
-      <i class="fa fa-download fa-lg"></i> Exportar</button></a> -->
 
     </div>  
 
@@ -107,6 +103,7 @@
       <!-- Formulário -->
       <form id="formulario_usuario" >
 
+        @csrf
       <!-- class="was-validated" -->
 
         <!-- Linha 1 - Dados Registro -->
@@ -132,21 +129,33 @@
         </div>
 
           <!-- Linha 1 - Dados Registro -->
-        <div class="row mb-3 g-3">
+        <div class="row mb-3 g-3" id="div_senha">
+          <!-- <div id="impSenha"></div>  -->
+         
           <div class="col-sm-2">
             <label for="senha" class="form-label">Senha:</label>
-            <input type="password" id="senha" name="senha" class="form-control form-control-sm"   required>
+            <input type="password" class="form-control form-control-sm" id="senha" name="senha" class="form-control form-control-sm"   required>
           </div>
           <div class="col-sm-2">
             <label for="confirmacao_senha" class="form-label">Confirmação de Senha:</label>
-            <input type="password" id="confirmacao_senha" name="confirmacao_senha" class="form-control form-control-sm" 
-                data-bv-identical="true"
-                data-bv-identical-field="senha"
-                data-bv-identical-message="A confirmação de senha não está igual à senha."
-            required>
+            <input type="password" class="form-control form-control-sm" id="confirmacao_senha" name="confirmacao_senha" class="form-control form-control-sm" onkeyup="Validar_Forca_Senha()" required>
+          </div>
+            <div id="forca_senha"></div>  
+            <div id="erro_forca_senha"></div> 
+          <div class="row mb-3 g-3">
+            <div class="col-sm-3">
+              <div class="form-check form-switch">
+                <label class="form-check-label" for="enviar_senha">Enviar Senha no E-mail do Usuário</label>
+                <input class="form-control form-check-input" type="checkbox" id="enviar_senha" name="enviar_senha" checked>
+              </div>
+              <div class="form-check form-switch">
+                <label class="form-check-label" for="alterar_senha">Alterar Senha no Primeiro Login</label>
+                <input class="form-control form-check-input" type="checkbox" id="alterar_senha" name="alterar_senha" checked>
+              </div>
+            </div>
           </div>
         </div>
-
+        
          <!-- Botões de Ação -->
          <div class="modal-footer">
           <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal"><i class="fa fa-sign-out-alt fa-lg"></i> Sair</button>

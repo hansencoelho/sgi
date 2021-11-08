@@ -36,6 +36,10 @@ class ControllerRegistro extends Controller
 
     public function index()
     {
+
+        if (Auth::User()->primeiro_login == 1) {
+            return redirect()->route('alterar_senha'); 
+        }
         
         if( Gate::denies('registro-view')) {
 

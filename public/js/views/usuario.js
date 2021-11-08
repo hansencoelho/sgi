@@ -202,12 +202,56 @@ $(function() {
 
 });
 
+function Validar_Forca_Senha(){
+	var senha = document.getElementById('confirmacao_senha').value;
+	var forca = 0;
+	// document.getElementById("impSenha").innerHTML = "Senha " + senha;
+
+	if((senha.length >= 4) && (senha.length <= 7)){
+		forca += 10;
+	}else if(senha.length > 7){
+		forca += 25;
+	}
+
+	if((senha.length >= 5) && (senha.match(/[a-z]+/))){
+		forca += 10;
+	}
+
+	if((senha.length >= 6) && (senha.match(/[A-Z]+/))){
+		forca += 20;
+	}
+
+	if((senha.length >= 7) && (senha.match(/[@#$%&;*]/))){
+		forca += 25;
+	}
+
+	if(senha.match(/([1-9]+)\1{1,}/)){
+		forca += -25;
+	}
+
+	Mostrar_Forca(forca);
+}
+
+function Mostrar_Forca(forca){
+	document.getElementById("forca_senha").innerHTML = "Força: " + forca;
+
+	if(forca < 30 ){
+		document.getElementById("erro_forca_senha").innerHTML = "<span style='color: #ff0000'>Fraca</span>";
+	}else if((forca >= 30) && (forca < 50)){
+		document.getElementById("erro_forca_senha").innerHTML = "<span style='color: #FFD700'>Média</span>";
+	}else if((forca >= 50) && (forca < 70)){
+		document.getElementById("erro_forca_senha").innerHTML = "<span style='color: #7FFF00'>Forte</span>";
+	}else if((forca >= 70) && (forca < 100)){
+		document.getElementById("erro_forca_senha").innerHTML = "<span style='color: #008000'>Excelente</span>";
+	}
+}
+
 // // Apresenta um formulário em branco para novo registro, e lista os Dados Auxiliares do Registro nos Campos do Formulário
 function create_usuario() {
 
   clear_form();
 
-      $('#button_modal').attr('onclick','save_registro();');
+      $('#button_modal').attr('onclick','save_usuario();');
       $('#titulo_modal').html('Criar Usuário');
 
 }
@@ -296,127 +340,108 @@ function show_usuario(id_usuario) {
 
 }
 
-// function save_registro() {
+function save_usuario() {
 
-//   var count = 0
-//   var forms = document.querySelectorAll("[required]");
+  var count = 0
+  var forms = document.querySelectorAll("[required]");
 
-//   $.each(forms, function(index, form) {
-//     if (form.value === '') {
-//       count = count + 1;
-//     }
-//   });
+  $.each(forms, function(index, form) {
+    if (form.value === '') {
+      count = count + 1;
+    }
+  });
 
-//   if (count > 0) {
+  if (count > 0) {
 
-//     alert('Todos os campos devem ser preenchidos antes de salvar o registro!');
-//     return false;
+    alert('Todos os campos devem ser preenchidos antes de salvar o registro!');
+    return false;
 
-//   } else {
+  } else {
 
-//     var _token = $('meta[name="_token"]').attr('content');
-//     const formData = new FormData(formulario_registro);
+    var _token = $('meta[name="_token"]').attr('content');
+    const formData = new FormData(formulario_usuario);
 
-//     $.ajax({
-//         headers: { 'X-CSRF-TOKEN': _token },
-//         url: '/registro',
-//         method: 'POST',
-//         type: 'POST',
-//         data: formData,
-//         cache: false,
-//         contentType: false,
-//         // contentType: 'multipart/form-data',
-//         processData: false,
-//         xhr: function () {
-//             var xhr = new window.XMLHttpRequest();
-//             xhr.upload.addEventListener("progress",
-//                 uploadProgressHandler,
-//                 false
-//             );
-//             // Funções de saída do XHR
-//             xhr.addEventListener("load", loadHandler, false);
-//             xhr.addEventListener("error", errorHandler, false);
-//             xhr.addEventListener("abort", abortHandler, false);
+    $.ajax({
+        headers: { 'X-CSRF-TOKEN': _token },
+        url: '/usuario',
+        method: 'POST',
+        type: 'POST',
+        data: formData,
+        cache: false,
+        contentType: false,
+        // contentType: 'multipart/form-data',
+        processData: false,
+        xhr: function () {
+            var xhr = new window.XMLHttpRequest();
+            xhr.upload.addEventListener("progress",
+                uploadProgressHandler,
+                false
+            );
+            // Funções de saída do XHR
+            xhr.addEventListener("load", loadHandler, false);
+            xhr.addEventListener("error", errorHandler, false);
+            xhr.addEventListener("abort", abortHandler, false);
 
-//             return xhr;
-//         }
-//     });    
+            return xhr;
+        }
+    });    
 
-//   }
+  }
 
-// }
+}
 
-// function uploadProgressHandler(event) {
+function uploadProgressHandler(event) {
 
-//   // Mostra a barra de progresso
-//   $('#div_barra_progresso').show();
-//   // Mostra o progresso
-//   $('#label_barra_progresso').html("Carregando dados " + (event.loaded / 1000000).toFixed(3) + " MB de " + (event.total / 1000000).toFixed(3) + " MB");
 
-//   var percent = (event.loaded / event.total) * 100;
-//   var progress = Math.round(percent);
+  $('#div_carregamento').show();
 
-//   // Altera o progresso
-//   $("#barra_progresso").html(progress + "%");
-//   $("#barra_progresso").css("width", progress + "%");
-//   $("#barra_progresso").attr('aria-valuenow', progress);
-// }
+  // // Mostra a barra de progresso
+  // $('#div_barra_progresso').show();
+  // // Mostra o progresso
+  // $('#label_barra_progresso').html("Carregando dados " + (event.loaded / 1000000).toFixed(3) + " MB de " + (event.total / 1000000).toFixed(3) + " MB");
 
-// function loadHandler(event) {
+  // var percent = (event.loaded / event.total) * 100;
+  // var progress = Math.round(percent);
 
-//   var retorno = JSON.parse(event.currentTarget.status);
+  // // Altera o progresso
+  // $("#barra_progresso").html(progress + "%");
+  // $("#barra_progresso").css("width", progress + "%");
+  // $("#barra_progresso").attr('aria-valuenow', progress);
+}
 
-//   console.log(retorno);
+function loadHandler(event) {
 
-//   if (retorno == 403) {
-
-//   alert("Você não possui permissão para essa ação!");
+  $('#div_carregamento').hide();
   
-//   } else {
+  var retorno = JSON.parse(event.currentTarget.status);
 
-//     var retorno = JSON.parse(event.currentTarget.response);
+  console.log(retorno);
 
-//     if (retorno.arquivos.length == 0) {
+  if (retorno == 403) {
 
-//       $("#id").val(retorno.id_registro);
-//       $("#div_lista_arquivos").hide();
+  alert("Você não possui permissão para essa ação!");
+  
+  } else {
 
-//     } else {
+    var retorno = JSON.parse(event.currentTarget.response);
 
-//       $("#id").val(retorno.id_registro);
-//       $("#div_lista_arquivos").show();
-//       $("#lista_arquivos").attr('class', "collapse show");
-//       $("#card_arquivos").empty();
+    $("#titulo_modal").html("Alterar Usuário");
 
-//       $.each(retorno.arquivos, function(index, arquivo) {
-//         $("#card_arquivos").append('<p id=arquivo_' + arquivo.id + '><a href="/registro/arquivo/' + arquivo.id + '" target="_blank">' + arquivo.nome_arquivo + '</a> <a href="#" onclick="delete_arquivo(' + arquivo.id + ')"> <i style="color: #dc3545;" class="fa fa-trash-alt fa-lg"></i></a></p>');
-//       });
+    alert(retorno.resposta_mensagem);
 
-//     }
 
-//     $("#upload_arquivos").attr('class', "collapse");
 
-//     $("#barra_progresso").html("100%");
-//     $("#barra_progresso").css("width", "100%");
-//     $("#barra_progresso").attr('aria-valuenow', "100");
-//     $('#label_barra_progresso').html("Carregamento concluído");
+    }
 
-//     $('#div_barra_progresso').hide();
-//     $('#button_modal').attr('onclick','change_registro();');
+}
 
-//     alert(retorno.resposta_mensagem);
+function errorHandler(event) {
+  // $("#label_barra_progresso").html("Carregamento Falhou");
+}
 
-//     }
-
-// }
-
-// function errorHandler(event) {
-//   $("#label_barra_progresso").html("Carregamento Falhou");
-// }
-
-// function abortHandler(event) {
-//   $("#label_barra_progresso").html("Carregamnto Abortado");
-// }
+function abortHandler(event) {
+  // $("#label_barra_progresso").html("Carregamnto Abortado");
+}
 
 
 // function change_registro() {

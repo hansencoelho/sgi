@@ -13,7 +13,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Route::get('', ['middleware' => 'auth', 'uses' => 'ControllerHome@index']);
+Route::get('/', 'ControllerHome@index');
 
 // Route::get('/', function () {
 //     return view('auth.login');
@@ -25,13 +27,13 @@ Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('ho
 
 ### AUTENTICAÇÃO ###
 
-Auth::routes();
+// Auth::routes();
 
-// Auth::routes([
-//     'reset' => false,
-//     'verify' => false,
-//     'register' => true,
-// ]);
+Auth::routes([
+    'reset' => false,
+    'verify' => false,
+    'register' => false,
+]);
 
 // Route::get('/home', function () {
 //     return view('dashboard.home');
@@ -80,16 +82,42 @@ route::group(["prefix" => "usuario"], function() {
     Route::get('', 'ControllerUsuario@index')->name('usuario');
     Route::get('/create', 'ControllerUsuario@create')->name('usuario.create');
     Route::get('/show/{id_usuario}', 'ControllerUsuario@show');
+    Route::get('/alterar_senha', 'ControllerUsuario@alterar_senha');
 
     ## POST CRUD ##
-    Route::post('/', 'ControllerUsuario@store')->name('usuario.store');
+    Route::post('', 'ControllerUsuario@store')->name('usuario.store');
     Route::post('/update', 'ControllerUsuario@update')->name('usuario.update');
     Route::post('/find', 'ControllerUsuario@find')->name('usuario.find');
     
     ## GET GERAL ##
-    Route::get('/exportar/', 'ControllerUsuario@exportar')->name('usuario.exportar');
+    // Route::get('/exportar/', 'ControllerUsuario@exportar')->name('usuario.exportar');
     
     ## GET AUTOCOMPLETE ##
     Route::get('/autocomplete_funcao/', 'ControllerUsuario@autocomplete_funcao');
+
+    });
+
+######################
+#    ALTERAR SENHA   #
+######################
+
+route::group(["prefix" => "alterar_senha"], function() {
+
+    ## GET CRUD ##
+    Route::get('', 'ControllerPrimeiroAcesso@index')->name('alterar_senha');
+    // Route::get('/create', 'ControllerUsuario@create')->name('usuario.create');
+    // Route::get('/show/{id_usuario}', 'ControllerUsuario@show');
+    // Route::get('/alterar_senha', 'ControllerUsuario@alterar_senha');
+
+    ## POST CRUD ##
+    // Route::post('', 'ControllerUsuario@store')->name('usuario.store');
+    // Route::post('/update', 'ControllerUsuario@update')->name('usuario.update');
+    // Route::post('/find', 'ControllerUsuario@find')->name('usuario.find');
+    
+    ## GET GERAL ##
+    // Route::get('/exportar/', 'ControllerUsuario@exportar')->name('usuario.exportar');
+    
+    ## GET AUTOCOMPLETE ##
+    // Route::get('/autocomplete_funcao/', 'ControllerUsuario@autocomplete_funcao');
 
     });
