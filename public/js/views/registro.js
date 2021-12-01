@@ -9,12 +9,14 @@ $(function() {
 
       case 1:
         alterar_tipo_registro(tipo_registro);
+        $("#declarante").val('');
       break;
 
       case 2:
         alterar_tipo_registro(tipo_registro);
         alterar_estado_civil(1);
         $("#estado_civil").val("2");
+        $("#declarante").val('');
       break;
 
       case 3:
@@ -556,6 +558,8 @@ function loadHandler(event) {
     $('#div_barra_progresso').hide();
     $('#button_modal').attr('onclick','change_registro();');
 
+    $('#multiplos_arquivos').val('');
+
     alert(retorno.resposta_mensagem);
 
     }
@@ -812,23 +816,23 @@ function obter_campos(){
       // Opção Nascimento
       1: { 
         div_hide      : [ '#div_estado_civil', '#div_nome_conjuge' , '#div_sobrenome_conjuge'],
-        not_required  : [ '#estado_civil', '#nome_conjuge' , '#sobrenome_conjuge' ],
+        not_required  : [ '#estado_civil', '#nome_conjuge' , '#sobrenome_conjuge', '#id_religiao' ,'#religiao' ],
         div_show      : [ '#div_declarante', '#div_religiao', '#div_avos_registrados' ],
-        required      : [ '#declarante', '#id_religiao' , '#religiao', '#avos_registrados' ],
+        required      : [ '#declarante', '#avos_registrados' ], 
       },
       // Opção Casamento
       2: {
         div_hide      : [ '#div_declarante', '#div_declarante_terceiro' ],
-        not_required  : [ '#declarante', '#declarante_terceiro' ],
+        not_required  : [ '#declarante', '#declarante_terceiro', '#id_religiao', '#religiao' ],
         div_show      : [ '#div_estado_civil', '#div_nome_conjuge', '#div_sobrenome_conjuge', '#div_religiao' ],
-        required      : [ '#estado_civil', '#nome_conjuge', '#sobrenome_conjuge', '#id_religiao', '#religiao' ],
+        required      : [ '#estado_civil', '#nome_conjuge', '#sobrenome_conjuge'],
       },
       // Opção Óbito
       3: {
         div_hide      : [ '#div_avos_registrados' ],
-        not_required  : [ '#avos_registrados' ],
+        not_required  : [ '#avos_registrados', '#id_religiao', '#religiao' ],
         div_show      : [ '#div_estado_civil', '#div_nome_conjuge', '#div_sobrenome_conjuge', '#div_religiao', '#div_declarante' , '#div_declarante_terceiro' ],
-        required      : [ '#estado_civil', '#nome_conjuge', '#sobrenome_conjuge', '#id_religiao', '#religiao' , '#declarante', '#declarante_terceiro'],
+        required      : [ '#estado_civil', '#nome_conjuge', '#sobrenome_conjuge', '#declarante', '#declarante_terceiro'],
       },  
     },
 

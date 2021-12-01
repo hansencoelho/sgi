@@ -31,7 +31,7 @@ class SendMailUsuarioAlterarSenha extends Mailable
      */
     public function build()
     {
-        return $this->from('hansencoelho@gmail.com')->subject('Criação de Credencial - SGI')->view('administracao.usuario.email_senha')->with([
+        return $this->from('hansencoelho@gmail.com')->subject('Alteração de Senha - SGI')->view('administracao.usuario.email_senha_alterar')->with([
             'usuario' => $this->usuario,
         ]);;
     }

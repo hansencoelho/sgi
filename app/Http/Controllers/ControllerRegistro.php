@@ -621,7 +621,7 @@ class ControllerRegistro extends Controller
     public function delete(Request $request)
     {
 
-        if( Gate::denies('registro-view')) {
+        if( Gate::denies('registro-edit')) {
 
             abort(403, 'Não autorizado. Você não tem permissão de visualizar.');
     
@@ -665,7 +665,7 @@ class ControllerRegistro extends Controller
     public function delete_arquivo(Request $request)
     {
 
-        if( Gate::denies('registro-view')) {
+        if( Gate::denies('registro-edit')) {
 
             abort(403, 'Não autorizado. Você não tem permissão de visualizar.');
     

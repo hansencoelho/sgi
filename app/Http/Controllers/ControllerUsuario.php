@@ -10,7 +10,8 @@ use Hash;
 use Mail;
 use App\Models\User;
 use App\Models\AclFuncao;
-use App\Mail\SendMailUsuario    ;
+use App\Mail\SendMailUsuario;
+use App\Mail\SendMailUsuarioAlterarSenha;
 use Auth;
 
 class ControllerUsuario extends Controller
@@ -88,44 +89,44 @@ class ControllerUsuario extends Controller
         if( Gate::denies('usuario-view')) {
 
             abort(403, 'Não autorizado');
-    
-            } else {
 
-            $pesquisa_opcao = $request->pesquisa_opcao;
-            $texto          = $request->pesquisa_texto;
+        } else {
+
+            $pesquisa_opcao         = $request->pesquisa_opcao;
+            $texto                  = $request->pesquisa_texto;
+
 
             switch ($pesquisa_opcao) {
             case 1:
-                $pesquisa_opcao = 'users.name';
+                $pesquisa_opcao = 'users.nome';
                 break;
             case 2:
-                $pesquisa_opcao = 'email'; 
+                $pesquisa_opcao = 'users.email'; 
                 break;
             case 3:
-                $pesquisa_opcao = 'username'; 
+                $pesquisa_opcao = 'fu.descricao'; 
                 break;
 
             default:
-                $pesquisa_opcao = 'name'; 
+                $pesquisa_opcao = 'users.nome'; 
                 break;
         
             }
-        
+    
             $usuario = User::select(
-        
-                'id                 AS ID',
+    
+                'users.id           AS ID',
                 'name               AS NOME',
                 'email              AS EMAIL',
                 'username           AS USERNAME',
-                'departamento       AS AREA',
-                'gu.DESCRICAO       AS GRUPO_USUARIO',
-                'FK_GRUPO_USUARIO   AS ID_GRUPO_USUARIO',    
-                )
-                ->leftjoin('acl_grupo_usuario AS gu', 'users.FK_GRUPO_USUARIO', '=', 'gu.ID_ACL_GRUPO_USUARIO')
-
-                ->where($pesquisa_opcao, 'LIKE','%'.$texto.'%')
-                ->orderby('name', 'ASC')
-                ->get();
+                'fk_acl_funcao      AS ID_FUNCAO',
+                'fu.descricao       AS FUNCAO',
+        
+            )
+            ->leftjoin('acl_funcao AS fu', 'users.fk_acl_funcao', '=', 'fu.id')
+            ->where($pesquisa_opcao, 'LIKE','%'.$texto.'%')
+            ->orderby($pesquisa_opcao, 'ASC')
+            ->get();
 
             $contagem = $usuario->count();
             $titulo = 'Usuário';
@@ -135,7 +136,7 @@ class ControllerUsuario extends Controller
                 'pesquisa_texto' => $request->pesquisa_texto,
             ];        
 
-            return view('admin.usuario.listagem', compact(
+            return view('administracao.usuario.view', compact(
                 'usuario',
                 'contagem',
                 'titulo',
@@ -193,41 +194,55 @@ class ControllerUsuario extends Controller
     
         } else {
 
-            $usuario = new User;
-
-            $usuario->name                  = $request->nome;
-            $usuario->email                 = $request->email;
-            $usuario->username              = $request->usuario;
-            $usuario->fk_acl_funcao         = $request->id_funcao;
-            $usuario->password              = Hash::make($request->senha);
+            $usuario = User::select(
         
-          
-            if ($request->alterar_senha == "on" ) {
+            'users.id                   AS id',
+    
+            )
+            ->where('users.email' , 'like' , $request->email)
+            ->get();
 
-                $usuario->primeiro_login = 1;
+            if ($usuario != '[]') {
+
+                abort(403, 'Não autorizado. Você não tem permissão de editar.');
 
             } else {
 
-                $usuario->primeiro_login = 0;
+                $usuario = new User;
 
-            }
+                $usuario->name                  = $request->nome;
+                $usuario->email                 = $request->email;
+                $usuario->fk_acl_funcao         = $request->id_funcao;
+                $usuario->password              = Hash::make($request->senha);
             
-            $insert = $usuario->save();
+                if ($request->alterar_senha == "on" ) {
 
-            if ($request->enviar_senha == "on" ) {
+                    $usuario->primeiro_login = 1;
+
+                } else {
+
+                    $usuario->primeiro_login = 0;
+
+                }
                 
-                Mail::to($request->email)
-                // ->cc('copy@email.com')
-                ->send(new SendMailUsuario($request));
+                $insert = $usuario->save();
+
+                if ($request->enviar_senha == "on" ) {
+                    
+                    Mail::to($request->email)
+                    // ->cc('copy@email.com')
+                    ->send(new SendMailUsuario($request));
+                }
+
+                $dados = array();  
+                $dados = (object) $dados;
+
+                $dados->id_usuario = $usuario->id;
+                $dados->resposta_mensagem = "Usuário salvo com sucesso!";
+                
+                return response()->json($dados);
+
             }
-
-            $dados = array();  
-            $dados = (object) $dados;
-
-            $dados->id_usuario = $usuario->id;
-            $dados->resposta_mensagem = "Usuário salvo com sucesso!";
-            
-            return response()->json($dados);
 
         }
 
@@ -242,13 +257,22 @@ class ControllerUsuario extends Controller
     
         } else {
 
-            if ($request->confirmacao_senha) {
+            $usuario = User::select(
+    
+            'users.id                   AS id',
+    
+            )
+            ->where('users.email' , 'like' , $request->email)
+            ->where('users.id' , '!=' , $request->id)
+            ->get();
 
-                $senha = Hash::make($request->confirmacao_senha);
-                
-            }
+            if ($usuario != '[]') {
 
-            if ($request->alterar_senha == "on" ) {
+                abort(403, 'Não autorizado. Você não tem permissão de editar.');
+
+            } else {
+
+            if ($request->alterar_senha == "on") {
 
                 $request->alterar_senha = 1;
 
@@ -258,57 +282,82 @@ class ControllerUsuario extends Controller
 
             }
 
-            $update = User::where('id', '=', $request->id)->update([
+            if ($request->senha == '') {
 
-            'name'                  => $request->nome,
-            'email'                 => $request->email,
-            'username'              => $request->usuario,
-            'fk_acl_funcao'         => $request->id_funcao,        
+                $update = User::where('id', '=', $request->id)->update([
 
-            ]);
+                    'name'                  => $request->nome,
+                    'email'                 => $request->email,
+                    'fk_acl_funcao'         => $request->id_funcao,
+                    'primeiro_login'        => $request->alterar_senha,
+        
+                ]);
 
-            // $insert = $usuario->save();
+            } else {
 
-            if ($request->enviar_senha == "on" ) {
+                $update = User::where('id', '=', $request->id)->update([
+
+                    'name'                  => $request->nome,
+                    'email'                 => $request->email,
+                    'fk_acl_funcao'         => $request->id_funcao,
+                    'primeiro_login'        => $request->alterar_senha,
+                    'password'              => Hash::make($request->senha),
+        
+                ]);
+
+            }
+
+            if ($request->enviar_senha == "on" and  $request->senha != ''  ) {
                 
                 Mail::to($request->email)
                 // ->cc('copy@email.com')
-                ->send(new SendMailUsuario($request));
+                ->send(new SendMailUsuarioAlterarSenha($request));
             }
 
-            $usuario = User::select(
-        
-                'id                 AS ID_USUARIO',
-                'name               AS NOME',
-                'email              AS EMAIL',
-                'username           AS USERNAME',
-                'departamento       AS AREA',
-                'gu.DESCRICAO       AS GRUPO_USUARIO',
-                'FK_GRUPO_USUARIO   AS ID_GRUPO_USUARIO',
-                'users.created_at   AS INTEGRADO',
-                'users.updated_at   AS ATUALIZADO',
-        
-        
-                )
-                ->leftjoin('acl_grupo_usuario AS gu', 'users.FK_GRUPO_USUARIO', '=', 'gu.ID_ACL_GRUPO_USUARIO')
-                ->where('id' , '=' , $request->ID_USUARIO)
-                ->orderBy('name', 'ASC')
-                ->get();
-    
-            $grupo_usuario = AclGrupoUsuario::all();
-    
-            $titulo = "Usuário";
-            $mensagem = "Usuário alterado com sucesso.";
-    
-            return view('admin.usuario.formulario', compact(
-                'titulo',
-                'mensagem',
-                'usuario',
-            ));
+            $dados = array();  
+            $dados = (object) $dados;
 
+            $dados->id_usuario = Auth::User()->id;
+            // $dados->usuario =  $usuario;
+            $dados->resposta_mensagem = "Usuário alterado com sucesso!";
+            
+            return response()->json($dados);
+            
+            }
                     
         }
 
     }
+
+    public function delete(Request $request)
+    {
+
+        // dd($request);
+
+        if( Gate::denies('usuario-edit')) {
+
+            abort(403, 'Não autorizado. Você não tem permissão de visualizar.');
+    
+        } else {
+
+            $delete = User::where('id', $request->id_usuario)->delete();
+
+            if ($delete != 0) {
+
+                $retorno = 1; 
+
+            } else {
+
+                $retorno = 0;
+
+            }
+
+            return response()->json($retorno);
+
+        }
+
+    }
+
+
 
 }

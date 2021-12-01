@@ -2,6 +2,8 @@
 
 @section("content")
 
+<meta name="_token" content="{{ csrf_token() }}">
+
 <script type="text/javascript" language="javascript" src="{{ asset('js/letras_numeros.js') }}"></script>
 <script type="text/javascript" language="javascript" src="{{ asset('js/views/usuario.js') }}"></script>
 
@@ -30,29 +32,30 @@
 </div>
 
 {{-- Pesquisa --}}
-
 <div class="@if(isset($pesquisa_retorno)){{'collapse show'}}@else{{'collapse'}}@endif" id="pesquisar">
-  <div class="card card-body">
-  <form method="POST" action="{{ route('usuario.find') }}">
-    {{ csrf_field() }}
-      <div class="form-row">
+    <div class="card card-body">
+        <form id="formulario_pesquisa" class="row g-12" method="POST" action="{{ route('usuario.find') }}">
+        @csrf
 
-        <div class="form-group col-md-2 mb-0">
-          <select id="pesquisa_opcao" name="pesquisa_opcao" class="form-control form-control-sm">
-            <option value="1" @if (isset($pesquisa_retorno) && $pesquisa_retorno['pesquisa_opcao'] == 1 ) selected="selected" @endif>Nome</option>
-            <option value="2" @if (isset($pesquisa_retorno) && $pesquisa_retorno['pesquisa_opcao'] == 2 ) selected="selected" @endif>E-mail</option>
-            <option value="3" @if (isset($pesquisa_retorno) && $pesquisa_retorno['pesquisa_opcao'] == 3 ) selected="selected" @endif>Usuário</option>
-          </select>
-        </div>
-
-        <div class="form-group input-group col-md-2">
-          <input type="text" id="pesquisa_texto" name="pesquisa_texto" value="@if (isset($pesquisa_retorno)){{ $pesquisa_retorno['pesquisa_texto'] }}@endif" class="form-control form-control-sm" placeholder="Pesquisar..." aria-label="Recipient's username" aria-describedby="button-addon2">
-            <div class="input-group-append">
-              <button class="btn btn-primary btn-sm" type="submit" id="button-addon2">
-              <i class="fa fa-search fa-lg"></i></button>
+            <div class="col-sm-2">
+                <select id="pesquisa_opcao" name="pesquisa_opcao" class="form-select form-select-sm">
+                <option value="1" @if (isset($pesquisa_retorno) && $pesquisa_retorno['pesquisa_opcao'] == 1 ) selected="selected" @endif>Nome</option>
+                <option value="2" @if (isset($pesquisa_retorno) && $pesquisa_retorno['pesquisa_opcao'] == 2 ) selected="selected" @endif>E-mail</option>
+                <option value="3" @if (isset($pesquisa_retorno) && $pesquisa_retorno['pesquisa_opcao'] == 3 ) selected="selected" @endif>Função do Usuário</option>
+                </select>
             </div>
-        </div>
-
+            
+            <div class="col-md-4">
+                <!-- <label for="pesquisa_texto" class="form-label">Pesquisa:</label> -->
+                <input type="text" id="pesquisa_texto" name="pesquisa_texto" value="@if (isset($pesquisa_retorno)){{ $pesquisa_retorno['pesquisa_texto'] }}@endif" class="form-control form-control-sm" placeholder="Pesquisar..." aria-label="Recipient's username" aria-describedby="button-addon2">
+            </div>
+            
+            <div class="col-md-2">
+                <!-- <label for="botao_pesquisar" class="form-label">.</label> -->
+                <button class="btn btn-primary btn-sm" type="submit" id="botao_pesquisar">
+                <i class="fa fa-search fa-lg"></i></button>
+            </div>
+          
       </div>
     </form>
   </div>
@@ -67,7 +70,6 @@
       <tr>
         <th scope="col">Nome</th>
         <th scope="col">E-mail</th>
-        <th scope="col">Usuário</th>
         <th scope="col">Função do Usuário</th>
         <th scope="col" style="text-align: center;">Ação</th>
       </tr>
@@ -75,13 +77,14 @@
 
     <tbody>
       @forelse($usuario as $tb_usuario)
-      <tr>
+      <tr id="usuario_{{$tb_usuario->ID}}">
         <td>{{ $tb_usuario->NOME }}</td>
         <td>{{ $tb_usuario->EMAIL }}</td>
-        <td>{{ $tb_usuario->USERNAME }}</td>
         <td>{{ $tb_usuario->FUNCAO }}</td>
         <td style="text-align: center;"> 
-        <a href="#" onclick="show_usuario({{ $tb_usuario->ID }})" data-bs-toggle="modal" data-bs-target="#modal_usuario"> <i class="fa fa-eye fa-lg"></i></a></td>
+        <a href="#" onclick="show_usuario({{ $tb_usuario->ID }})" data-bs-toggle="modal" data-bs-target="#modal_usuario"> <i class="fa fa-eye fa-lg"></i></a>
+        <a href="#" onclick="delete_usuario({{ $tb_usuario->ID }})"> <i style="color: #dc3545;" class="fa fa-trash-alt fa-lg"></i></a>
+        </td>
       </tr>
       @empty
       @endforelse
@@ -101,7 +104,7 @@
             <span class="visually-hidden ms-auto">Loading...</span>
           </div>
       <!-- Formulário -->
-      <form id="formulario_usuario" >
+      <form id="formulario_usuario">
 
         @csrf
       <!-- class="was-validated" -->
@@ -109,19 +112,19 @@
         <!-- Linha 1 - Dados Registro -->
         <div class="row mb-3 g-3">
           <input type="hidden" id="id" name="id" class="form-control form-control-sm" value="">
-          <div class="col-sm-3">
+          <div class="col-sm-4">
             <label for="nome" class="form-label">Nome:</label>
             <input type="text" id="nome" name="nome" class="form-control form-control-sm" required>
           </div>
-          <div class="col-sm-3">
+          <div class="col-sm-4">
             <label for="email" class="form-label">E-mail:</label>
             <input type="email" id="email" name="email" class="form-control form-control-sm" required>
           </div>
-          <div class="col-sm-3">
+          <!-- <div class="col-sm-3">
             <label for="usuario" class="form-label">Usuário:</label>
             <input type="text" id="usuario" name="usuario" class="form-control form-control-sm" required>
-          </div>
-          <div class="col-sm-3">
+          </div> -->
+          <div class="col-sm-4">
           <input type="hidden" id="id_funcao" name="id_funcao" class="form-control form-control-sm" value="">
             <label for="funcao" class="form-label">Função:</label>
             <input type="text" id="funcao" name="funcao" class="form-control form-control-sm" required>
@@ -129,37 +132,40 @@
         </div>
 
           <!-- Linha 1 - Dados Registro -->
-        <div class="row mb-3 g-3" id="div_senha">
-          <!-- <div id="impSenha"></div>  -->
+        <div class="row mb-3 g-3">
          
-          <div class="col-sm-2">
+          <div class="col-sm-4">
             <label for="senha" class="form-label">Senha:</label>
-            <input type="password" class="form-control form-control-sm" id="senha" name="senha" class="form-control form-control-sm"   required>
+            <div class="input-group input-group-sm mb-3">
+              <input type="password" class="form-control" id="senha" name="senha" onkeyup="validar_forca_senha()" placeholder="Senha" aria-label="Senha" aria-describedby="senha_visivel">
+              <button class="btn btn-outline-primary" type="button" id="senha_visivel"><i class="fa fa-eye" aria-hidden="true"></i></button>
+            </div>
+
+            <div id="div_forca_senha" style="display: none;"></div>
+            <!-- <div id="div_erro_forca_senha" style="display: none;"></div> -->
+
           </div>
-          <div class="col-sm-2">
-            <label for="confirmacao_senha" class="form-label">Confirmação de Senha:</label>
-            <input type="password" class="form-control form-control-sm" id="confirmacao_senha" name="confirmacao_senha" class="form-control form-control-sm" onkeyup="Validar_Forca_Senha()" required>
-          </div>
-            <div id="forca_senha"></div>  
-            <div id="erro_forca_senha"></div> 
-          <div class="row mb-3 g-3">
-            <div class="col-sm-3">
-              <div class="form-check form-switch">
-                <label class="form-check-label" for="enviar_senha">Enviar Senha no E-mail do Usuário</label>
-                <input class="form-control form-check-input" type="checkbox" id="enviar_senha" name="enviar_senha" checked>
-              </div>
-              <div class="form-check form-switch">
-                <label class="form-check-label" for="alterar_senha">Alterar Senha no Primeiro Login</label>
-                <input class="form-control form-check-input" type="checkbox" id="alterar_senha" name="alterar_senha" checked>
-              </div>
+    
+        </div>
+
+        <div class="row mb-3 g-3">
+          <div class="col-sm-3">
+            <div class="form-check form-switch" id="div_enviar_senha">
+              <label class="form-check-label" for="enviar_senha">Enviar Senha no E-mail do Usuário</label>
+              <input class="form-control form-check-input" type="checkbox" id="enviar_senha" name="enviar_senha" checked>
+            </div>
+            <div class="form-check form-switch">
+              <label class="form-check-label" for="alterar_senha">Alterar Senha no Primeiro Login</label>
+              <input class="form-control form-check-input" type="checkbox" id="alterar_senha" name="alterar_senha" checked>
             </div>
           </div>
         </div>
+        <!-- </div> -->
         
          <!-- Botões de Ação -->
          <div class="modal-footer">
           <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal"><i class="fa fa-sign-out-alt fa-lg"></i> Sair</button>
-          <button type="button" id="button_modal" onclick="" class="btn btn-sm btn-success"><i class="fa fa-save fa-lg"></i> Salvar</button>
+          <button type="button" id="button_modal" id="botao_save" onclick="" class="btn btn-sm btn-success"><i class="fa fa-save fa-lg"></i> Salvar</button>
         </div>
         
       </form>

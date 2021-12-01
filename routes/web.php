@@ -88,6 +88,7 @@ route::group(["prefix" => "usuario"], function() {
     Route::post('', 'ControllerUsuario@store')->name('usuario.store');
     Route::post('/update', 'ControllerUsuario@update')->name('usuario.update');
     Route::post('/find', 'ControllerUsuario@find')->name('usuario.find');
+    Route::post('/delete', 'ControllerUsuario@delete');
     
     ## GET GERAL ##
     // Route::get('/exportar/', 'ControllerUsuario@exportar')->name('usuario.exportar');
@@ -111,7 +112,7 @@ route::group(["prefix" => "alterar_senha"], function() {
 
     ## POST CRUD ##
     // Route::post('', 'ControllerUsuario@store')->name('usuario.store');
-    // Route::post('/update', 'ControllerUsuario@update')->name('usuario.update');
+    Route::post('/update', 'ControllerPrimeiroAcesso@update')->name('alterar_senha.update');
     // Route::post('/find', 'ControllerUsuario@find')->name('usuario.find');
     
     ## GET GERAL ##

@@ -28,7 +28,7 @@
         <link href="{{ asset('/css/jquery-ui-1.13.0.min.css') }}" rel="stylesheet">
 
         <script type="text/javascript" language="javascript" src="{{ asset('js/letras_numeros.js') }}"></script>
-        <script type="text/javascript" language="javascript" src="{{ asset('js/views/usuario.js') }}"></script>
+        <script type="text/javascript" language="javascript" src="{{ asset('js/views/alterar_senha.js') }}"></script>
     </head>
 
     <body>
@@ -40,42 +40,44 @@
 </div>
 
       <!-- Formulário -->
-      <form id="formulario_alterar_senha" >
-
-      @csrf
-
-      {{-- Opções --}}
-      <div class="col-md-12">
+      <div id="div_carregamento" class="spinner-border text-primary" role="status" style="display: none;">
+            <span class="visually-hidden ms-auto">Loading...</span>
+          </div>
+      <!-- Formulário -->
+      <form id="formulario_usuario" action="{{ route ('alterar_senha.update') }}" method="post">
+        @csrf
         <!-- Linha 1 - Dados Registro -->
-        <div class="row mb-3 g-3" id="div_senha">
-          <div class="col-sm-2">
-            <label for="senha" class="form-label">Senha:</label>
-            <input type="password" class="form-control form-control-sm" id="senha" name="senha" class="form-control form-control-sm"   required>
-          </div>
-          <div class="col-sm-2">
-            <label for="confirmacao_senha" class="form-label">Confirmação de Senha:</label>
-            <input type="password" class="form-control form-control-sm" id="confirmacao_senha" name="confirmacao_senha" class="form-control form-control-sm" required>
-          </div>
+        <div class="row mb-3 g-3">
+          <input type="hidden" id="id" name="id" class="form-control form-control-sm" value="{{ Auth::User()->id }}">
         </div>
+
+          <!-- Linha 2 - Senha -->
+        <div class="row mb-3 g-3">
+         
+          <div class="col-sm-4">
+            <label for="senha" class="form-label">Nova Senha:</label>
+            <div class="input-group input-group-sm mb-3">
+              <input type="password" class="form-control" id="senha" name="senha" onkeyup="validar_forca_senha()" placeholder="Nova Senha" aria-label="Nova Senha" aria-describedby="senha_visivel">
+              <button class="btn btn-outline-primary" type="button" id="senha_visivel"><i class="fa fa-eye" aria-hidden="true"></i></button>
+            </div>
+            <div id="div_forca_senha" style="display: none;"></div>
+          </div>
+    
+        </div>
+
         <div class="row mb-3 g-3">
           <div class="col-sm-3">
-            <div class="form-check form-switch">
-              <label class="form-check-label" for="enviar_senha">Enviar Senha no E-mail do Usuário</label>
+            <div class="form-check form-switch" id="div_enviar_senha">
+              <label class="form-check-label" for="enviar_senha">Enviar Senha no E-mail</label>
               <input class="form-control form-check-input" type="checkbox" id="enviar_senha" name="enviar_senha" checked>
-            </div>
-            <div class="form-check form-switch">
-              <label class="form-check-label" for="alterar_senha">Alterar Senha no Primeiro Login</label>
-              <input class="form-control form-check-input" type="checkbox" id="alterar_senha" name="alterar_senha" checked>
             </div>
           </div>
         </div>
-        
-      </div>
         
       <!-- Botões de Ação -->
       <div class="modal-footer">
-        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal"><i class="fa fa-sign-out-alt fa-lg"></i> Sair</button>
-        <button type="button" id="button_modal" onclick="" class="btn btn-sm btn-success"><i class="fa fa-save fa-lg"></i> Salvar</button>
+        @if (Auth::User()->primeiro_login == 0) <a href="{{ url()->previous() }}"><button type="button" class="btn btn-sm btn-danger" ><i class="fa fa-sign-out-alt fa-lg"></i> Voltar</button></a> @endif
+        <button type="submit" id="button_modal" class="btn btn-sm btn-success" disabled><i class="fa fa-save fa-lg"></i> Salvar</button>
       </div>
         
       </form>

@@ -11,6 +11,7 @@ use Mail;
 use App\Models\User;
 use App\Models\AclFuncao;
 use App\Mail\SendMailUsuario;
+use App\Mail\SendMailUsuarioAlterarSenha;
 use Auth;
 
 class ControllerPrimeiroAcesso extends Controller
@@ -23,7 +24,7 @@ class ControllerPrimeiroAcesso extends Controller
 
     public function index()
     {
-        $titulo = "Alteração de senha do 1º Login";
+        $titulo = "Alteração de senha";
         
         return view('administracao.alterar_senha.view', compact(
             'titulo',
@@ -50,50 +51,49 @@ class ControllerPrimeiroAcesso extends Controller
     public function update(Request $request)
     {
 
-        if( Gate::denies('usuario-edit')) {
+        if (Auth::User()->id == $request->id) {           
 
-            abort(403, 'Não autorizado. Você não tem permissão de editar.');
+            $update = User::where('id', '=', $request->id)->update([
+
+                'primeiro_login'        => 0,
+                'password'              => Hash::make($request->senha),
     
-        } else {
-
-            $update = User::where('id', '=', $request->ID_USUARIO)->update([
-
-            'FK_GRUPO_USUARIO'          => $request->ID_GRUPO_USUARIO,
-
             ]);
 
-            $usuario = User::select(
-        
-                'id                 AS ID_USUARIO',
-                'name               AS NOME',
-                'email              AS EMAIL',
-                'username           AS USERNAME',
-                'departamento       AS AREA',
-                'gu.DESCRICAO       AS GRUPO_USUARIO',
-                'FK_GRUPO_USUARIO   AS ID_GRUPO_USUARIO',
-                'users.created_at   AS INTEGRADO',
-                'users.updated_at   AS ATUALIZADO',
-        
-        
-                )
-                ->leftjoin('acl_grupo_usuario AS gu', 'users.FK_GRUPO_USUARIO', '=', 'gu.ID_ACL_GRUPO_USUARIO')
-                ->where('id' , '=' , $request->ID_USUARIO)
-                ->orderBy('name', 'ASC')
-                ->get();
-    
-            $grupo_usuario = AclGrupoUsuario::all();
-    
-            $titulo = "Usuário";
-            $mensagem = "Usuário alterado com sucesso.";
-    
-            return view('admin.usuario.formulario', compact(
-                'titulo',
-                'mensagem',
-                'usuario',
-            ));
+            $usuario = User::select('*')
+            ->where('users.id', '=', $request->id)
+            ->get();
 
-                    
-        }
+            // dd($usuario);
+
+            $dados = array();  
+            $dados = (object) $dados;
+
+            $dados->senha = $request->senha;
+            $dados->email    = $usuario[0]->email;
+          
+            if ($request->enviar_senha == "on" and  $request->senha != ''  ) {
+                
+                Mail::to($dados->email)
+                // ->cc('copy@email.com')
+                ->send(new SendMailUsuarioAlterarSenha($dados));
+            }
+
+             
+
+            $dados = array();  
+            $dados = (object) $dados;
+
+            $dados->resposta_mensagem = "Senha do Usuário alterada com sucesso!";
+            
+            return view('dashboard.home');
+            
+            } else {
+
+                abort(403, 'Não autorizado. Você não tem permissão de editar outro usuário.');
+
+            }
+        
 
     }
 
