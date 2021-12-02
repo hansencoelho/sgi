@@ -17,9 +17,11 @@
   <div class="row row-cols-2">
     <div class="col-md-10">
 
+      @can('usuario-create')
       <button type="button" onclick="create_usuario()" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modal_usuario">
       <i class="fa fa-plus fa-lg"></i> Novo</button>
-
+      @endcan
+      
       <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#pesquisar" aria-expanded="false">
       <i class="fa fa-search fa-lg"></i> Pesquisar</button>
 
